@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+<title>登录</title>
+
+<!-- CSS  -->
+<link rel="Shortcut Icon" href="/static/favicon.ico" type="image/x-icon" />
+<link href="/static/css/icon.css" rel="stylesheet">
+<link href="/static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<link href="/static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+</head>
+
+<body>
+	<nav class="blue gback" role="navigation">
+		<div class="nav-wrapper container">
+			<div class="brand-logo left noselect" style="padding-left:10px;font-size: 20px; margin-top: -5px;">
+                <img src="/static/images/logo.png" width="40px;" style="vertical-align: middle;">&nbsp;百百
+            </div>
+            <div class="right" style="padding-left:10px;font-size: 16px;">
+                <a href="/commons/client/download">客户端下载</a>
+            </div>
+		</div>
+	</nav>
+	<div class="hide" id="error-msg-panel"><p th:if="${param.error}" th:text="${session?.SPRING_SECURITY_LAST_EXCEPTION?.message}" ></p></div>
+	<div class="container">
+		<div class="section">
+			<div class="row">
+				<br />
+				<div class="col s3"></div>
+				<div class="col s6">
+				    <form class="col s12" method="post" th:action="@{/login}">
+						<div class="card">
+							<div class="card-content">
+								<div class="row">
+									<div class="col s12">
+										<div class="row">
+											<div class="input-field col s12">
+												<input id="user_username" name="username" type="text" class="validate"> <label for="user_username">登录名称</label>
+											</div>
+										</div>
+										<div class="row">
+											<div class="input-field col s12">
+												<input id="user_password" name="password" type="password" class="validate"> <label for="user_password">密码</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="card-action right-align">
+							    <a href="/resetpw">忘记密码？</a>
+								<a href="/signup">注册账号</a>
+								<button id="btn-login" type="submit" class="waves-effect waves-light btn-small blue gback"><i class="material-icons left">cloud</i>登 录</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="col s3"></div>
+			</div>
+		</div>
+	</div>
+
+	<!--  Scripts-->
+	<script src="/static/js/jquery-2.1.1.min.js"></script>
+	<script src="/static/js/jquery.aop.min.js"></script>
+	<script src="/static/js/jquery.md5.js"></script>
+	<script src="/static/js/materialize.min.js"></script>
+	<script src="/static/js/http.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+			
+			var loginObj = {
+					init: function(){
+						if($("#error-msg-panel").html() != ""){
+							M.toast({html: $("#error-msg-panel").find("p").html()});
+						}
+						$("#btn-login").click(loginObj.onLogin);
+					},
+					onLogin: function(){
+						var params = {
+								username: $("#user_username").val(),
+								password: $("#user_password").val()
+						}
+						
+						if(params.username == "" || params.password == ""){
+							M.toast({html: '参数填写未完整'});
+							return false;
+						}
+						
+						if(params.username.length < 6){
+							M.toast({html: '用户名称字符个数最少6位'});
+							return false;
+						}
+						
+						if(params.password.length < 6){
+							M.toast({html: '密码字符个数最少6位'});
+							return false;
+						}
+						
+						var pw = $("#user_password").val();
+						$("#user_password").val($.md5(pw));
+					}
+			}
+			
+			loginObj.init();
+		});
+	</script>
+</body>
+
+</html>

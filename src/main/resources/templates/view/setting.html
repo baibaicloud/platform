@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style type="text/css">
+.setting-page {
+    padding-top: 10px;
+}
+</style>
+</head>
+
+<body>
+	<div class="setting-page">
+		<div class="row">
+		  <div class="col s3"></div>
+		  <div class="col s6">
+		      <h6>基本信息</h6>
+		      <div class="input-field">
+                <input disabled id="setring-username" type="text">
+                <label for="setring-username">登录名称</label>
+              </div>
+              <div class="input-field">
+                <input disabled id="setring-email" type="text">
+                <label for="setring-email" class="active">邮箱</label>
+              </div>
+              <div class="input-field">
+                <input id="setring-name" type="text">
+                <label for="setring-name">用户名称</label>
+              </div>
+              <br>
+              <h6>修改密码</h6>
+              <div class="input-field">
+                <input id="setring-old-pw" type="password">
+                <label for="setring-old-pw">老密码</label>
+              </div>
+              <div class="input-field">
+                <input id="setring-pw1" type="password">
+                <label for="setring-pw1">新密码</label>
+              </div>
+              <div class="input-field">
+                <input id="setring-pw2" type="password">
+                <label for="setring-pw2">新密码确认</label>
+              </div>
+              <button onclick="settingObj.editClick()" class="btn waves-effect waves-light gback align-right" name="action">更新
+			    <i class="material-icons right">send</i>
+			  </button>
+		  </div>
+		  <div class="col s3"></div>
+		</div>
+	</div>
+
+	<!--  Scripts-->
+	<script src="/static/js/jquery-2.1.1.min.js"></script>
+	<script src="/static/js/materialize.min.js"></script>
+	<script src="/static/js/jquery.md5.js"></script>
+	<script src="/static/js/http.js"></script>
+	<script type="text/javascript">
+	     
+		var settingObj = {
+			init: function(){
+				$.httpSend({
+                    url: '/user/info/get',
+                    type: 'post',
+                    success: function(resp){
+                    	$("#setring-username").val(resp.content.username);
+                    	$("#setring-email").val(resp.content.email);
+                    	$("#setring-name").val(resp.content.selfname);
+                    	$("label[for=setring-username]").addClass("active");
+                    	$("label[for=setring-email]").addClass("active");
+                    	$("label[for=setring-name]").addClass("active");
+                    }
+                })
+			},
+			editClick: function(){
+				var selfname = $("#setring-name").val();
+				var oldpw = $("#setring-old-pw").val();
+				var pw1 = $("#setring-pw1").val();
+				var pw2 = $("#setring-pw2").val();
+				if(selfname == ""){
+					M.toast({html: "用户名称不能为空"});
+					return;
+				}
+				
+				var params = new Object();
+				params.selfname = selfname;
+				if(oldpw != ""){
+					
+					if(pw1 == ""){
+						M.toast({html: "新密码不能为空"});
+						return;
+					}
+					
+					if(pw1 != pw2){
+                        M.toast({html: "两次输入的密码不一致"});
+                        return;
+                    }
+                    
+                    if(pw1.length < 6 || oldpw.length < 6){
+                        M.toast({html: "密码长度至少6位"});
+                        return;
+                    }
+					
+					params.oldPw = $.md5(oldpw);
+					params.password = $.md5(pw1);
+				}
+				
+				$.httpSend({
+	                url: '/user/update',
+	                type: 'post',
+	                data: JSON.stringify(params),
+	                success: function(resp){
+	                    if(!resp.success){
+	                        M.toast({html: resp.message});
+	                        return;
+	                    }
+	                    M.toast({html: "修改成功"});
+	                    
+	                    $("#setring-old-pw").val("");
+	                    $("#setring-pw1").val("");
+	                    $("#setring-pw2").val("");
+	                }
+	            })
+			}
+		}
+		
+		$(function(){
+			settingObj.init();
+		});
+	</script>
+</body>
+
+</html>
