@@ -8,7 +8,7 @@ java-jdk1.8
 平台-spring boot+html+css+jquery
 客户端-electron
 远程控制-vnc ultra
-内网穿透-frp-有进行增强，主要增加端口验证，预防恶意连接、代理。
+内网穿透-frp-有进行增强，主要增加端口验证，预防恶意连接、代理。[frp源码](https://github.com/baibaicloud/frp)
 数据库-mysql
 
 平台程序支持运行在linux,windowns
@@ -27,6 +27,7 @@ java-jdk1.8
 系统默认启动会监听`8080`端口
 
 # 客户端启动
+[客户端源码](https://github.com/baibaicloud/prober)
 直接进入prober根目录
 
 ```powershell
@@ -34,4 +35,5 @@ npm start
 ```
 启动之后要修改平台服务器地址
 
+# docker 一键部署
 
