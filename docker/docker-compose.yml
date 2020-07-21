@@ -1,0 +1,36 @@
+version: "2"
+services:
+
+    mysql:
+        container_name: baibai-mysql
+        restart: always
+        logging:
+            driver: none
+        image: registry.cn-hangzhou.aliyuncs.com/baibaicloud/mysql:5.7
+        network_mode: "host"
+        volumes:
+            - "${MYSQL_DIR}/data:/var/lib/mysql"
+        environment:
+            # 环境变量
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
+    guacd:
+        container_name: baibai-guacd
+        restart: always
+        logging:
+            driver: none
+        image: registry.cn-hangzhou.aliyuncs.com/baibaicloud/guacamole-guacd:1.2.0
+        network_mode: "host"
+        
+    platform:
+        container_name: baibai-platform
+        restart: always
+        logging:
+            driver: none
+        image: registry.cn-hangzhou.aliyuncs.com/baibaicloud/baibai-platform:1.0.0
+        network_mode: "host"
+        volumes:
+            - "${PLATFORM_DIR}/logs:/logs"
+        environment:
+            # 环境变量
+            - PARAMS=${PLATFORM_PARAMS}

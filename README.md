@@ -14,6 +14,9 @@ java-jdk1.8
 平台程序支持运行在linux,windowns
 客户端目前只支持windowns7/10 32/64位
 
+# docker 部署启动
+[请查看./docker/readme.md](./docker/readme.md)
+
 # 平台启动
 修改配置文件
 
@@ -35,5 +38,5 @@ npm start
 ```
 启动之后要修改平台服务器地址
 
-# docker 一键部署
-
+# docker build image
+[请查看./docker/readme.md](./docker/readme.md)
