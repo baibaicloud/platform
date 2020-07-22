@@ -11,5 +11,3 @@ RUN mkdir /app
 COPY assembly-1.0.0.jar /app/assembly.jar
 
 ENTRYPOINT ["sh","-c","java -jar /app/assembly.jar $PARAMS"]
-
-
