@@ -3,7 +3,7 @@
 
 环境要求docker+docker-compose
 
-`[点击查看docker+docker-compose安装方式](https://blog.csdn.net/weixin_38989540/article/details/107436628)`
+[点击查看docker+docker-compose安装方式](https://blog.csdn.net/weixin_38989540/article/details/107436628)
 
 # 阿里云docker源使用方式
 ```
