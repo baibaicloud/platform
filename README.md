@@ -76,5 +76,5 @@ npm start
 
 # docker build image
 ```
-docker build -t registry.cn-hangzhou.aliyuncs.com/baibaicloud/baibai-platform:1.0.0 .
+docker build -t registry.cn-hangzhou.aliyuncs.com/baibaicloud/baibai-platform:1.0.2 .
 ```

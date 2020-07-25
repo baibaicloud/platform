@@ -1,9 +1,21 @@
 # 介绍
 目标通过运行go.sh脚本，即可部署整个百百后台系统
 
-环境要求docker+docker-compose
+环境要求centos7+docker+docker-compose
 
 [点击查看docker+docker-compose安装方式](https://blog.csdn.net/weixin_38989540/article/details/107436628)
+
+`注意：要开启防火墙`
+
+```
+systemctl enable firewalld.service
+systemctl start firewalld.service
+firewall-cmd --get-active-zones
+firewall-cmd --zone=public --add-port=8080/tcp --permanent
+firewall-cmd --zone=public --add-port=7000/tcp --permanent
+firewall-cmd --zone=public --add-port=8100/tcp --permanent
+firewall-cmd --reload
+```
 
 # 阿里云docker源使用方式
 ```

@@ -34,7 +34,7 @@ services:
             - "/data/mysql/initdb:/docker-entrypoint-initdb.d"
             - "/data/mysql/data:/var/lib/mysql"
         environment:
-            # 环境变量 ieED!0dj5d5ie!kdkd
+            # 环境变量 
             - MYSQL_ROOT_PASSWORD=123456
 
     guacd:
@@ -50,12 +50,13 @@ services:
         restart: always
         logging:
             driver: none
-        image: registry.cn-hangzhou.aliyuncs.com/baibaicloud/baibai-platform:1.0.0
+        image: registry.cn-hangzhou.aliyuncs.com/baibaicloud/baibai-platform:1.0.2
         network_mode: "host"
         depends_on:
             - mysql
         volumes:
             - "/data/platform/logs:/logs"
+            - "/data/platform/bridge.zip:/app/bridge.zip"
         environment:
             # 环境变量
             - PARAMS=--server.port=8080 --frp.server.address=192.168.88.135 --frptunnel.server.address=192.168.88.135 --guac.guac.hostname=192.168.88.135
