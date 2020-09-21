@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style type="text/css">
+.setting-page {
+    padding-top: 10px;
+}
+</style>
+</head>
+
+<body>
+	<div class="addne-page">
+		<div class="row">
+		  <div class="col s3"></div>
+		  <div class="col s6">
+		      <p>添加网元</p>
+              <div class="input-field">
+                <input id="addne-page-bindkey" type="text">
+                <label for="addne-page-bindkey">授权码</label>
+              </div>
+              <div class="input-field">
+                <input id="addne-page-code" type="text">
+                <label for="addne-page-code">验证码</label>
+              </div>
+              <button onclick="addneObj.addneClick()" class="btn waves-effect waves-light gback align-right" name="action">添加
+			    <i class="material-icons right">add_circle_outline</i>
+			  </button>
+		  </div>
+		  <div class="col s3"></div>
+		</div>
+	</div>
+
+	<!--  Scripts-->
+	<script src="/static/js/jquery-2.1.1.min.js"></script>
+	<script src="/static/js/materialize.min.js"></script>
+	<script src="/static/js/jquery.md5.js"></script>
+	<script src="/static/js/http.js"></script>
+	<script type="text/javascript">
+	     
+		var addneObj = {
+			
+			addneClick: function(){
+				var key = $("#addne-page-bindkey").val();
+				var code =$("#addne-page-code").val();
+				if(key == "" || code == ""){
+					M.toast({html: "参数未填写完整"});
+					return;
+				}
+				
+				$.httpSend({
+                    url: '/device/user/bind',
+                    type: 'post',
+                    data: JSON.stringify({
+                        uuid: key,
+                        code: code,
+                    }),
+                    success: function(resp){
+                        if(!resp.success){
+                        	M.toast({html: resp.message});
+                            return;
+                        }
+                        M.toast({html: "添加邀请已发出，请等待确认"});
+                    }
+                })
+			}
+		}
+	</script>
+</body>
+
+</html>

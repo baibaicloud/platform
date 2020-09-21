@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<style type="text/css">
+.resource-manage .rm-left .collection a {
+	-moz-user-select: none; /*火狐*/
+	-webkit-user-select: none; /*webkit浏览器*/
+	-ms-user-select: none; /*IE10*/
+	-khtml-user-select: none; /*早期浏览器*/
+	user-select: none;
+}
+
+.resource-manage .rm-left .collection {
+	border: 0px;
+}
+
+.resource-manage .rm-left .collection .collection-item {
+	cursor: pointer;
+	color: #909090;
+	border: 0px;
+}
+
+.resource-manage .rm-left .collection .collection-item.active {
+	background-color: #2196F3;
+	color: white;
+}
+
+.resource-manage .rm-left .collection .collection-item .collection-item-type
+	{
+	/* pointer-events:none; */
+	
+}
+
+.resource-manage .rm-left .collection .collection-item .collection-item-next-type
+	{
+	position: absolute;
+	margin-left: -20px;
+}
+
+.resource-manage .rm-left .collection .collection-item .material-icons {
+	vertical-align: middle;
+	margin-right: 5px;
+}
+
+.resource-manage .rm-left .collection .collection-item .title {
+	font-size: 16px;
+	pointer-events: none;
+}
+
+.resource-manage .rm-left .collection .collection-item.level1 {
+	
+}
+
+.resource-manage .rm-left .collection .collection-item.level2 {
+	padding-left: 35px;
+}
+
+.resource-manage .rm-left .collection .collection-item.level3 {
+	padding-left: 65px;
+}
+
+.resource-manage .rm-left .collection .collection-item.level4 {
+	padding-left: 95px;
+}
+
+.resource-manage .rm-left .collection .collection-item.level5 {
+	padding-left: 125px;
+}
+
+.resource-manage .rm-left .collection .collection-item.level6 {
+	padding-left: 135px;
+}
+
+.rm-use-last-ne-btn:hover {
+	background-color: #e8e8e8;
+}
+
+.nenode-move {
+	height: 45px;
+	text-align: center;
+	background-color: rgba(0, 0, 0, 0.2);
+	pointer-events: none;
+}
+
+.rm-nodetemp {
+	height: 10px;
+	background-color: #909090;
+}
+
+.xuanzhuan {
+	-webkit-transform: rotate(360deg);
+	animation: rotation 10s linear infinite;
+	-moz-animation: rotation 10s linear infinite;
+	-webkit-animation: rotation 10s linear infinite;
+	-o-animation: rotation 10s linear infinite;
+}
+
+@
+-webkit-keyframes rotation {
+	from {-webkit-transform: rotate(0deg);}
+	to {
+		-webkit-transform: rotate(360deg);
+	}
+}
+
+.rm-nenode-remote-tunnel-modal-content .row .col {
+	padding: 0px;
+}
+
+.rm-nenode-status-online {
+    color:#2196F3;
+}
+
+.rm-nenode-status-offline {
+    color:#9e9e9e;
+}
+
+.rm-nenode-status-ing {
+    color:#65da50;
+}
+
+</style>
+</head>
+
+<body>
+	<div class="resource-manage">
+		<div>
+			<div class="rm-left" style="position: fixed; width: 300px; top: 65px; background-color: #FFFFFF; height: 100%; z-index: 1; border-right: solid 1px #dcdcdc;">
+				<a id="rm-use-last-ne-btn" onclick="resourceManageObj.uselastClick(this)" class="btn-flat rm-use-last-ne-btn" style="width: 100%; border-radius: 0px; padding-left: 40px; color: #909090; border-bottom: solid 1px #dcdcdc; display: none;"><i class="material-icons left">layers</i>最近使用</a>
+				<div id="rm-resource-group-load-panel" class="center-align" style="margin-top: 100px;">
+					<div>
+						<div class="preloader-wrapper big active">
+							<div class="spinner-layer spinner-blue">
+								<div class="circle-clipper left">
+									<div class="circle"></div>
+								</div>
+								<div class="gap-patch">
+									<div class="circle"></div>
+								</div>
+								<div class="circle-clipper right">
+									<div class="circle"></div>
+								</div>
+							</div>
+							<div class="spinner-layer spinner-red">
+								<div class="circle-clipper left">
+									<div class="circle"></div>
+								</div>
+								<div class="gap-patch">
+									<div class="circle"></div>
+								</div>
+								<div class="circle-clipper right">
+									<div class="circle"></div>
+								</div>
+							</div>
+							<div class="spinner-layer spinner-yellow">
+								<div class="circle-clipper left">
+									<div class="circle"></div>
+								</div>
+								<div class="gap-patch">
+									<div class="circle"></div>
+								</div>
+								<div class="circle-clipper right">
+									<div class="circle"></div>
+								</div>
+							</div>
+							<div class="spinner-layer spinner-green">
+								<div class="circle-clipper left">
+									<div class="circle"></div>
+								</div>
+								<div class="gap-patch">
+									<div class="circle"></div>
+								</div>
+								<div class="circle-clipper right">
+									<div class="circle"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="rm-new-tree"></div>
+				<div id="rm-tree-empty" class="hide" style="text-align: center; padding-top: 50px;">
+					<i class="material-icons xuanzhuan" style="font-size: 60px; color: rgba(95, 43, 161, 1);">toys</i>
+					<p>空节点</p>
+				</div>
+			</div>
+			<div class="rm-right" style="position: absolute; width: 100%; padding-left: 300px;">
+				<div class="row">
+					<div id="rm-list-loading-panel" class="center-align " style="padding-top: 100px;">
+						<div class="preloader-wrapper big active">
+							<div class="spinner-layer spinner-blue">
+								<div class="circle-clipper left">
+									<div class="circle"></div>
+								</div>
+								<div class="gap-patch">
+									<div class="circle"></div>
+								</div>
+								<div class="circle-clipper right">
+									<div class="circle"></div>
+								</div>
+							</div>
+							<div class="spinner-layer spinner-red">
+								<div class="circle-clipper left">
+									<div class="circle"></div>
+								</div>
+								<div class="gap-patch">
+									<div class="circle"></div>
+								</div>
+								<div class="circle-clipper right">
+									<div class="circle"></div>
+								</div>
+							</div>
+							<div class="spinner-layer spinner-yellow">
+								<div class="circle-clipper left">
+									<div class="circle"></div>
+								</div>
+								<div class="gap-patch">
+									<div class="circle"></div>
+								</div>
+								<div class="circle-clipper right">
+									<div class="circle"></div>
+								</div>
+							</div>
+							<div class="spinner-layer spinner-green">
+								<div class="circle-clipper left">
+									<div class="circle"></div>
+								</div>
+								<div class="gap-patch">
+									<div class="circle"></div>
+								</div>
+								<div class="circle-clipper right">
+									<div class="circle"></div>
+								</div>
+							</div>
+						</div>
+						<div style="color: #9e9e9e; font-size:">数据加载中</div>
+					</div>
+					<div id="rm-list-empty-panel" class="center-align hide" style="padding-top: 100px;">
+						<h3 class="center-align">暂无网元</h3>
+						<a href="/commons/client/download" class="waves-effect waves-light btn-small gback"><i class="material-icons left">cloud_download</i>下载客户端</a>
+					</div>
+					<div id="rm-list-panel" class="hide"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 编辑资源模态框 -->
+	<div id="editDeviceModal" class="modal">
+		<div class="modal-content">
+			<h6>修改备注</h6>
+			<div class="input-field" style="margin-top: 20px;">
+				<input id="rm_edit_devdesc" type="text"> <label for="rm_edit_devdesc" class="">备注信息</label>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<a href="#!" class="modal-close" style="margin-right: 20px;">取消</a> <a href="#!" onclick="resourceManageObj.submitEditDeviceDescClick(this)" class="modal-close waves-effect btn gback">确定</a>
+		</div>
+	</div>
+
+	<!-- 弹出模态框 -->
+	<div id="rm-notify-ack-modal" class="modal">
+		<div class="modal-content">
+			<p id="rm-nenode-add-edit-modal-content" style="color: red;"></p>
+		</div>
+		<div class="modal-footer">
+			<a href="#!" class="modal-close" style="margin-right: 20px;">取消</a> <a href="#!" onclick="resourceManageObj.notifyAckClick(this)" class="modal-close waves-effect btn gback">确定</a>
+		</div>
+	</div>
+
+	<!-- 移动网元模态框 -->
+	<div id="rm-nenode-modal" class="modal modal-fixed-footer">
+		<div class="modal-content">
+			<ul id="rm-nenode-modal-tree" class="ztree"></ul>
+			<p style="color: #2196f3">
+				网元移动到：<span id="rm-nenode-modal-move-to-name"></span>
+			</p>
+		</div>
+		<div class="modal-footer">
+			<a href="#!" class="modal-close" style="margin-right: 20px;">取消</a> <a href="#!" onclick="deviceObj.moveAckClick(this)" class="modal-close waves-effect btn gback">确定</a>
+		</div>
+	</div>
+
+	<!-- tunnel模态框 -->
+	<div id="rm-nenode-tunnel-modal" class="modal modal-fixed-footer">
+		<div class="modal-content">
+			<form action="#">
+				<p>协议类型</p>
+				<label> <input id="rm-tunnel-tunneltype-tcp" name="tunneltype" type="radio" /> <span>TCP</span>
+				</label> <label style="margin-left: 20px;"> <input id="rm-tunnel-tunneltype-udp" name="tunneltype" type="radio" /> <span>UDP</span>
+				</label>
+				<p />
+				<div class="row">
+					<div class="input-field col s12">
+						<input id="rm-tunnel-local-ip" type="text" class="validate"> <label for="rm-tunnel-local-ip">本地IP</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12">
+						<input id="rm-tunnel-local-port" type="number" class="validate"> <label for="rm-tunnel-local-port">本地端口</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12">
+						<input id="rm-tunnel-remote-port" type="number" class="validate"> <label for="rm-tunnel-remote-port">远程端口</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12">
+						<textarea id="rm-tunnel-remark" class="materialize-textarea" data-length="120"></textarea>
+						<label for="rm-tunnel-remark">备注</label>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a href="#!" class="modal-close" style="margin-right: 20px;">取消</a> <a href="#!" id="rm-tunnel-add-btn" onclick="deviceObj.tunnelAckClick(this)" class="waves-effect btn gback">确定</a>
+		</div>
+	</div>
+
+	<!-- remote rp模态框 -->
+	<div id="rm-nenode-remote-tunnel-modal" class="modal modal-fixed-footer">
+		<div class="modal-content rm-nenode-remote-tunnel-modal-content">
+			<div class="row">
+				<div class="col s12">
+					<ul id="rm-nenode-remote-tunnel-modal-tabs" class="tabs">
+						<li class="tab col s6"><a onclick="resourceManageObj.switchRemoteType('vnc')" tag="rm-nenode-remote-tunnel-modal-tabs" id="rm-nenode-remote-tunnel-modal-tabs-vnc" class="active" href="#rm-remote-modal-panel-vnc">VNC协议</a></li>
+						<li class="tab col s6"><a onclick="resourceManageObj.switchRemoteType('rdp')" tag="rm-nenode-remote-tunnel-modal-tabs" href="#rm-remote-modal-panel-rdp">RDP协议</a></li>
+						<!-- <li class="tab col s4"><a onclick="resourceManageObj.switchRemoteType('ssh')" tag="rm-nenode-remote-tunnel-modal-tabs" href="#rm-remote-modal-panel-ssh">SSH</a></li> -->
+					</ul>
+				</div>
+				<div id="rm-remote-modal-panel-vnc" class="col s12 center-align" style="height: 20px;">
+				</div>
+				<div id="rm-remote-modal-panel-rdp" class="col s12">
+				    <div style="padding: 20px 12px 0px; ">
+				        <form>
+				            <div class="row">
+                              <div class="input-field col s12">
+                                <input id="rm-remote-modal-panel-rdp-username" value="Administrator" type="text" class="validate">
+                                <label for="rm-remote-modal-panel-rdp-username">登录名称*</label>
+                              </div>
+                            </div>
+				            <div class="row">
+				              <div class="input-field col s12">
+				                <input id="rm-remote-modal-panel-rdp-password" type="password" class="validate">
+				                <label for="rm-remote-modal-panel-rdp-password">登录密码*</label>
+				              </div>
+				            </div>
+				        </form>
+				    </div>
+				</div>
+				<!-- <div id="rm-remote-modal-panel-ssh" class="col s12">
+				    <div style="padding: 20px 12px 0px; ">
+                        <form>
+                            <div class="row">
+                              <div class="input-field col s12">
+                                <input id="rm-remote-modal-panel-ssh-username" value="root" type="text" class="validate">
+                                <label for="rm-remote-modal-panel-ssh-username">登录名称*</label>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="input-field col s12">
+                                <input id="rm-remote-modal-panel-ssh-password" type="password" class="validate">
+                                <label for="rm-remote-modal-panel-ssh-password">登录密码*</label>
+                              </div>
+                            </div>
+                        </form>
+                    </div>
+                </div> -->
+                <div class="row">
+                   <div class="input-field col s12">
+                     <input id="rm-remote-modal-panel-port" type="text" class="validate">
+                     <label for="rm-remote-modal-panel-port">本地端口*</label>
+                   </div>
+                 </div>
+			</div>
+			<div class="center-align">
+                <div id="rm-nenode-remote-tunnel-modal-startremote-btn" style="width: 50%;" onclick="resourceManageObj.readyStartRemoteClick(this)" class="waves-effect btn gback">发起</div>
+            </div>
+		</div>
+		<div class="modal-footer" style="padding-top: 15px; padding-right: 15px;">
+			<a href="#!" class="modal-close">取消</a>
+		</div>
+	</div>
+
+	<!--  Scripts-->
+	<script src="/static/js/jquery-2.1.1.min.js"></script>
+	<script src="/static/js/jquery.aop.min.js"></script>
+	<script src="/static/js/jquery.nicescroll.min.js" charset="utf-8"></script>
+	<script src="/static/three/jstree/jstree.js" charset="utf-8"></script>
+	<script src="/static/js/jquery.ztree.all.js" charset="utf-8"></script>
+	<script src="/static/js/materialize.min.js"></script>
+	<script src="/static/three/jquery-confirm/jquery-confirm.min.js"></script>
+	<script src="/static/js/utils.js"></script>
+	<script src="/static/js/http.js"></script>
+	<script src="/static/js/view/rm.nenode.tree.js"></script>
+	<script src="/static/js/view/device.js"></script>
+
+	<script type="text/html" id="rm-list-item-template">
+        <div class="col m3" id="{id}">
+		    <div class="card">
+                <a id="rm-nenode-menu-dropdown-a-{id}" style="position:absolute; right:10px; top: 20px;" class='dropdown-trigger' href='#' data-target='rm-nenode-menu-dropdown-{id}'><i class="material-icons">menu</i></a>
+		        <div class="card-content" style="color: #6b6f82;">
+		           <p style="margin-bottom: 0px;"><div>计算机名称<i id="rm-nenode-remote-menu-status-{id}" status={nenode-status} title="{statusdesc}" class="material-icons {statusclass}" style="font-size: 18px; vertical-align:-4px; margin-left: 5px;">cloud</i></div><span tag="devicename" style="font-size: 12px;">{name}</span></p>
+                   <p style="margin-bottom: 10px;"><div>备注</div><a title="{devdesc}" onclick="resourceManageObj.editDeviceDescClick(this)" edittag="{edittagid}" class="modal-trigger truncate" style="color:#6b6f82; font-size: 12px;" href="#editDeviceModal">{devdesc}</a></p>
+		        </div>
+		    </div>
+			<ul id='rm-nenode-menu-dropdown-{id}' class='dropdown-content'>
+				<li class="{rm-menu-move-hide}"><a href="#!" onclick="deviceObj.moveDevice(this)">移动</a></li>
+                <li class="{rm-menu-tunel-hide}"><a href="#!" onclick="deviceObj.tunnelDevice(this)">内网穿透</a></li>
+				<li id="rm-nenode-remote-menu-dropdown-a-{id}" class="{rm-menu-tunel-hide} {rm-menu-tunnel-remoteing} {rm-menu-isoffline}"><a href="#!" eid="{id}" onclick="resourceManageObj.showRemoteNePanelClick(this)">远程控制</a></li>
+                <li id="rm-nenode-remote-menu-dropdown-shutdown-{id}" class="{rm-menu-tunel-hide} {rm-menu-isoffline}"><a href="#!" eid="{id}" onclick="resourceManageObj.shutdownClick(this)" style="color:red;">远程关机</a></li>
+                <li class="{rm-menu-del-hide}"><a href="#!" eid="{id}" onclick="deviceObj.delDevice(this)" style="color:red;">删除</a></li>
+			</ul>
+		</div>
+    </script>
+	<script type="text/html" id="rm-tree-item-template">
+		<a id="{id}" eid="{eid}" nenodepath="{path}" rm-tree-pid="{pid}" nenodetitle="{nenodetitle}" onclick="resourceManageObj.treeItemChildClick(this)" class="collection-item {level} {show}">
+            <i onclick="resourceManageObj.treeItemSwitchChildClick(this)" class="collection-item-next-type material-icons hide">{icons}</i><i class="collection-item-type material-icons" style="color:#F6CE62">{folder}</i><span nodetitle class="title">{title}</span>
+        </a>
+	</script>
+	<script type="text/html" id="rm-tree-item-move-template">
+        <div class="nenode-move hide">
+         <p>{title}</p>
+        </div>
+    </script>
+	<script type="text/html" id="rm-tree-temp-item-move-template">
+        <div tag="nenodetemp" class="rm-nodetemp">&nbsp;</div>
+    </script>
+
+	<script type="text/javascript">
+		var resourceManageObj = {
+			nenodeSelect : null,
+			notifyData : null,
+			init : function() {
+				M.AutoInit();
+				rmnenodetree.init();
+				resourceManageObj.setRight();
+				M.Modal.init($('#rm-nenode-remote-tunnel-modal'), {
+                    onOpenEnd: function(){
+                    	$("a[tag=rm-nenode-remote-tunnel-modal-tabs]").removeClass("active");
+                    	$('#rm-nenode-remote-tunnel-modal-tabs').tabs();
+                    	resourceManageObj.switchRemoteType('vnc');
+                    }
+                });
+				$(window).resize(function(){
+					resourceManageObj.resize();
+				});
+			},
+			resize: function(){
+				
+			},
+			setRight : function() {
+				/**
+				$.each(indexObj.rightInfo.rights, function(i, item){
+				    if(item == "nenode_manage"){
+				        $("#rm-manage-ne-btn").removeClass("hide");                        
+				    }
+				});
+				 */
+			},
+			notifyAckClick : function() {
+				if (resourceManageObj.notifyData == null) {
+					return;
+				}
+				resourceManageObj.notifyData.callback(resourceManageObj.notifyData.data);
+			},
+			showNotifyUI : function(msg, data, callback) {
+				resourceManageObj.notifyData = {
+					callback : callback,
+					data : data
+				}
+				$("#rm-nenode-add-edit-modal-content").html(msg);
+				$('#rm-notify-ack-modal').modal('open');
+			},
+			uselastClick : function(cur) {
+				$(cur).addClass("gback");
+				$(cur).css("color", "#FFFFFF");
+				$('#rm-new-tree').jstree(true).deselect_all();
+				resourceManageObj.nenodeSelect = null;
+				resourceManageObj.loadDeviceList();
+			},
+			editDeviceDescClick : function(cur) {
+				var did = $(cur).parent().parent().parent().attr("id");
+				$("#editDeviceModal").attr("editmodaltag", did);
+
+				if ($(cur).html() != "无（点击编辑）") {
+					$("#rm_edit_devdesc").val($(cur).html());
+					setTimeout(function() {
+						$("#rm_edit_devdesc").focus();
+					}, 500);
+				} else {
+					$("#rm_edit_devdesc").val("");
+				}
+			},
+			submitEditDeviceDescClick : function(cur) {
+				var val = $("#rm_edit_devdesc").val();
+				if (val == "") {
+					return;
+				}
+				var tempid = $("#editDeviceModal").attr("editmodaltag");
+				$("a[edittag=" + tempid + "]").html(val);
+
+				$.httpSend({
+					url : '/device/update',
+					type : 'post',
+					data : JSON.stringify({
+						id : tempid,
+						devdesc : val
+					}),
+					success : function(resp) {
+						if (!resp.success) {
+							return;
+						}
+						M.toast({
+							html : "修改成功"
+						});
+					}
+				})
+
+			},
+			shutdownClick : function(cur) {
+				var did = $(cur).attr("eid");
+				var name = $(cur).parent().parent().parent().parent().find("span[tag=devicename]").html();
+				$.conf({
+					title: "关机提醒",
+					content: "是否确定关闭【"+ name +"】计算机？",
+					okfun: function(){
+						$.httpSend({
+	                        url : '/remotecpe/shutdown',
+	                        type : 'post',
+	                        data : JSON.stringify({
+	                            "deviceId" : did
+	                        }),
+	                        success : function(resp) {
+	                            if (!resp.success) {
+	                                M.toast({
+	                                    html : resp.message
+	                                });
+	                                return;
+	                            }
+	                        }
+	                    })
+					}
+				});
+			},
+			switchRemoteingUI : function(id, flag) {
+				if (flag) {
+					$("#rm-nenode-remote-menu-status-" + id).attr('title','正常远程中');
+					$("#rm-nenode-remote-menu-status-" + id).attr('status','ing');
+	                $("#rm-nenode-remote-menu-status-" + id).removeClass('rm-nenode-status-online');
+	                $("#rm-nenode-remote-menu-status-" + id).addClass("rm-nenode-status-ing");
+				} else {
+					$("#rm-nenode-remote-menu-status-" + id).attr('title','在线');
+					$("#rm-nenode-remote-menu-status-" + id).attr('status','online');
+                    $("#rm-nenode-remote-menu-status-" + id).addClass('rm-nenode-status-online');
+                    $("#rm-nenode-remote-menu-status-" + id).removeClass("rm-nenode-status-ing");
+				}
+			},
+			showRemoteNePanelClick: function(cur){
+				var did = $(cur).attr("eid");
+				$("#rm-remote-modal-panel-rdp-username").val("Administrator");
+				$("#rm-remote-modal-panel-rdp-password").val("");
+				$("#rm-nenode-remote-tunnel-modal-startremote-btn").attr("eid", did);
+				$("#rm-nenode-remote-tunnel-modal-startremote-btn").attr("remote-type", "vnc");
+				$('#rm-nenode-remote-tunnel-modal').modal('open');
+			},
+			readyStartRemoteClick: function(cur){
+				var did = $(cur).attr("eid");
+				var params = {
+						deviceId: $(cur).attr("eid"),
+						type: $(cur).attr("remote-type"),
+						localPort: $("#rm-remote-modal-panel-port").val()
+				}
+				var flag = resourceManageObj.checkRemoteParams(params.type);
+				if(flag){
+					return;
+				}
+				
+			    if(params.type == "rdp"){
+                    params.username = $("#rm-remote-modal-panel-rdp-username").val();
+                    params.password = $("#rm-remote-modal-panel-rdp-password").val();
+                }
+			    
+			    if(params.type == "ssh"){
+                    params.username = $("#rm-remote-modal-panel-ssh-username").val();
+                    params.password = $("#rm-remote-modal-panel-ssh-password").val();
+                }
+				
+				resourceManageObj.startRemoteClick(params);
+			},
+			checkRemoteParams: function(type){
+				
+				if($("#rm-remote-modal-panel-port").val() == ""){
+					M.toast({html: "参数填写未完整"});
+                    return true;
+				}
+				
+				if(type == "vnc"){
+					return false;
+				}
+				
+				if(type == "rdp"){
+					if($("#rm-remote-modal-panel-rdp-username").val() == "" || $("#rm-remote-modal-panel-rdp-password").val() == ""){
+						M.toast({html: "参数填写未完整"});
+						return true;
+					}
+                    return false;
+                }
+				
+				if(type == "ssh"){
+                    if($("#rm-remote-modal-panel-ssh-username").val() == "" || $("#rm-remote-modal-panel-ssh-password").val() == ""){
+                        M.toast({html: "参数填写未完整"});
+                        return true;
+                    }
+                    return false;
+                }
+				return true;
+			},
+			switchRemoteType: function(type){
+				$("#rm-nenode-remote-tunnel-modal-startremote-btn").attr("remote-type", type);
+				if(type == 'vnc'){
+					$("#rm-remote-modal-panel-port").val("5900");
+				}
+				if(type == 'rdp'){
+                    $("#rm-remote-modal-panel-port").val("3389");
+                    $("#rm-remote-modal-panel-rdp-username").val("Administrator");
+                    $("#rm-remote-modal-panel-rdp-password").val("");
+                }
+				if(type == 'ssh'){
+                    $("#rm-remote-modal-panel-port").val("22");
+                    $("#rm-remote-modal-panel-ssh-username").val("root");
+                    $("#rm-remote-modal-panel-ssh-password").val("");
+                }
+				M.updateTextFields();
+			},
+			startRemoteClick : function(params) {
+				M.toast({html: "发起远程协助中，请稍等"});
+				resourceManageObj.switchRemoteingUI(params.deviceId, true);
+				$.httpSend({
+					url : '/remotecpe/start',
+					type : 'post',
+					data : JSON.stringify(params),
+					success : function(resp) {
+						if (!resp.success) {
+							M.toast({
+								html : resp.message
+							});
+							resourceManageObj.switchRemoteingUI(params.deviceId, false);
+							return;
+						}
+						window.open("webdesktop?uuid=" + resp.content.uuid);
+					}
+				})
+				$('#rm-nenode-remote-tunnel-modal').modal('close');
+			},
+			loadDeviceList : function() {
+				clearTimeout(indexObj.lastPageRMSetTimeoutId);
+
+				var params = null;
+				if (resourceManageObj.nenodeSelect == null) {
+					params = {
+						id : ""
+					};
+				} else {
+					params = resourceManageObj.nenodeSelect;
+				}
+
+				$.httpSend({
+					url : '/device/list/get',
+					type : 'post',
+					data : JSON.stringify(params),
+					success : function(resp) {
+
+						$("#rm-list-loading-panel").addClass("hide");
+						if (resp.content.length == 0) {
+							$("#rm-list-panel").addClass("hide");
+							$("#rm-list-empty-panel").removeClass("hide");
+							return;
+						}
+
+						$("#rm-list-panel").html("");
+						$("#rm-list-panel").removeClass("hide");
+						$("#rm-list-empty-panel").addClass("hide");
+						resp.content.forEach(function(item, index) {
+							var html = $("#rm-list-item-template").html();
+							html = html.replace(new RegExp("{id}", "gm"),item.id);
+							html = html.replace("{edittagid}", item.id);
+							html = html.replace("{name}", item.name);
+							html = html.replace(new RegExp("{devdesc}", "gm"),item.devdesc == "" ? "无（点击编辑）": item.devdesc);
+							if (item.isonline) {
+								html = html.replace("{startremote}", "gback");
+								html = html.replace("{offnode}", "red");
+							} else {
+								html = html.replace("{startremote}", "disabled");
+								html = html.replace("{offnode}", "disabled");
+							}
+
+							html = html.replace("{rm-menu-tunel-hide}", (indexObj.hasRight("tunnel_manage") ? "" : "hide"));
+							html = html.replace("{rm-menu-move-hide}", (indexObj.hasRight("nenode_manage") ? "" : "hide"));
+							html = html.replace("{rm-menu-del-hide}", (indexObj.hasRight("nenode_manage") ? "" : "hide"));
+
+							if (item.isremote) {
+								html = html.replace("{statusclass}", "rm-nenode-status-ing");
+								html = html.replace("{rm-menu-tunnel-remoteing}", "hide");
+								html = html.replace("{statusdesc}", "正在远程中");
+								html = html.replace("{nenode-status}", "ing");
+							} else {
+								html = html.replace("{rm-menu-tunnel-remoteing}", "");
+								if (item.isonline) {
+									html = html.replace("{nenode-status}", "online");
+									html = html.replace(new RegExp("{rm-menu-isoffline}", "gm"), "");
+									html = html.replace("{statusclass}", "rm-nenode-status-online");
+	                                html = html.replace("{statusdesc}", "在线");
+	                            } else {
+	                            	html = html.replace("{nenode-status}", "offline");
+	                            	html = html.replace(new RegExp("{rm-menu-isoffline}", "gm"), "hide");
+	                            	html = html.replace("{statusclass}", "rm-nenode-status-offline");
+	                                html = html.replace("{statusdesc}", "离线");
+	                            }
+							}
+
+							$("#rm-list-panel").prepend(html);
+							M.Dropdown.init($('#rm-nenode-menu-dropdown-a-' + item.id), {
+								hover : true,
+								onOpenStart: function(){
+									var status = $("#rm-nenode-remote-menu-status-" + item.id).attr("status");
+									if(status == "offline"){
+                                        $("#rm-nenode-remote-menu-dropdown-shutdown-" + item.id).addClass("hide");
+                                        $("#rm-nenode-remote-menu-dropdown-a-" + item.id).addClass("hide");
+                                        return;
+                                    }
+									
+									if(status == 'ing'){
+										$("#rm-nenode-remote-menu-dropdown-a-" + item.id).addClass("hide");
+									}
+									
+									if(status == 'online'){
+                                        $("#rm-nenode-remote-menu-dropdown-a-" + item.id).removeClass("hide");
+                                    }
+								}
+							});
+						});
+
+						indexObj.lastPageRMSetTimeoutId = setTimeout(
+								function() {
+									resourceManageObj.loadDeviceList();
+								}, 10000);
+					}
+				});
+			},
+			treeItemChildClick : function(node) {
+
+				if (resourceManageObj.nenodeSelect != null
+						&& resourceManageObj.nenodeSelect.id == node.id) {
+					return;
+				}
+
+				resourceManageObj.nenodeSelect = {
+					id : node.id,
+					pid : node.parent,
+					title : node.text,
+				}
+
+				resourceManageObj.loadDeviceList();
+			},
+		}
+
+		$(function() {
+			resourceManageObj.init();
+		});
+	</script>
+</body>
+
+</html>

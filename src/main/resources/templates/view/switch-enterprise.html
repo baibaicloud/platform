@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style type="text/css">
+
+.switch-enterprise-page .card {
+    margin-right: 10px; 
+}
+
+</style>
+</head>
+
+<body>
+	<div class="switch-enterprise-page">
+		<div class="row" style="padding-top: 10px;">
+                <div id="switchenterprise-switch-tip-info-panel" class="center-align hide" style="margin-bottom: 20px;">
+                  <h5>请选择登录类型</h5>
+                </div>
+				<div id="switchenterprise-switch-type-list-panel"></div>
+		</div>
+	</div>
+	<script type="text/html" id="switchenterprise-switch-type-list-item-template">
+		<div class="col s2 offset-s{size} card horizontal hoverable">
+		    <div class="card-stacked">
+		        <div class="card-content center-align" style="padding: 20px;">
+		            <p>{name}</p>
+		        </div>
+		        <div class="card-action">
+		            <a href="#" class="right" id="{id}" etype="{type}" onclick="switchEnterpriseObj.setBtn(this)">登 录</a>
+		        </div>
+		    </div>
+		</div>
+	</script>
+
+	<!--  Scripts-->
+	<script src="/static/js/jquery-2.1.1.min.js"></script>
+	<script src="/static/js/materialize.min.js"></script>
+	<script src="/static/js/jquery.md5.js"></script>
+	<script src="/static/js/http.js"></script>
+	<script type="text/javascript">
+		var switchEnterpriseObj = {
+			    init: function(){
+			    	$.httpSend({
+	                    url: '/user/switch/info/list/get',
+	                    type: 'post',
+	                    success: function(resp){
+	                        if(resp.content.length == 1){
+	                        	switchEnterpriseObj.loadRight();
+	                            return;
+	                        }
+	                        
+	                        if(resp.content.cur != null){
+	                        	switchEnterpriseObj.loadRight();
+	                        	return;
+	                        }
+	                        
+	                        $("#switchenterprise-switch-tip-info-panel").removeClass("hide");
+	                        resp.content.list.forEach(function(item, index){
+	                        	if(index == 0){
+	                        		var html = $("#switchenterprise-switch-type-list-item-template").html();
+	                                html = html.replace(new RegExp("{id}","gm"), item.id);
+	                                html = html.replace(new RegExp("{name}","gm"), item.name);
+	                                html = html.replace(new RegExp("{type}","gm"), item.type);
+	                                html = html.replace(new RegExp("{size}","gm"), 6 - resp.content.list.length);
+	                                $("#switchenterprise-switch-type-list-panel").append(html);
+	                        		return true;
+	                        	}
+	                        	
+	                        	var html = $("#switchenterprise-switch-type-list-item-template").html();
+	                            html = html.replace(new RegExp("{id}","gm"), item.id);
+	                            html = html.replace(new RegExp("{name}","gm"), item.name);
+	                            html = html.replace(new RegExp("{type}","gm"), item.type);
+	                            html = html.replace(new RegExp("{size}","gm"), "0");
+	                            $("#switchenterprise-switch-type-list-panel").append(html);
+	                        });
+	                    }
+	                })
+			    },
+			    loadRight: function(){
+			    	$.httpSend({
+                        url: '/right/user/right/list/get',
+                        type: 'post',
+                        success: function(resp){
+                        	indexObj.setRight(resp.content);
+                        }
+                    })
+			    },
+			    setBtn: function(cur){
+			    	var params = {
+			    			type: $(cur).attr("etype"),
+			    			targetId: $(cur).attr("id")
+			    	}
+			    	
+			    	$.httpSend({
+                        url: '/user/switch/info/set',
+                        type: 'post',
+                        data: JSON.stringify(params),
+                        success: function(resp){
+                            if(!resp.success){
+                                M.toast({html: resp.message});
+                                return;
+                            }
+                            
+                            switchEnterpriseObj.loadRight();
+                        }
+                    })
+			    }
+		}
+		
+		switchEnterpriseObj.init();
+	</script>
+</body>
+
+</html>

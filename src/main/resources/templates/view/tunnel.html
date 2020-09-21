@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style type="text/css">
+.setting-page {
+	padding-top: 10px;
+}
+</style>
+</head>
+
+<body>
+	<div class="tunnel-page">
+		<div class="row">
+			<div class="col s12">
+				<table id="example" class="hover" style="width: 100%; border-bottom: 2px solid #7621A2;">
+					<thead>
+						<tr>
+							<th>编号</th>
+							<th>设备名称</th>
+							<th>状态</th>
+							<th>本地IP</th>
+							<th>本地端口</th>
+							<th>远程端口</th>
+							<th>协议类型</th>
+							<th>备注</th>
+							<th>创建时间</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!--  Scripts-->
+	<script src="/static/js/jquery-2.1.1.min.js"></script>
+	<script src="/static/js/materialize.min.js"></script>
+	<script src="/static/js/jquery.md5.js"></script>
+	<script src="/static/three/datatables/jquery.dataTables.min.js"></script>
+	<script src="/static/three/datatables/dataTables.material.js"></script>
+	<script src="/static/three/jquery-confirm/jquery-confirm.min.js"></script>
+    <script src="/static/js/utils.js"></script>
+	<script src="/static/js/http.js"></script>
+	<script type="text/javascript">
+		var tunnelObj = {
+		    table: null,
+			init : function() {
+				M.AutoInit();
+				tunnelObj.table = $('#example').DataTable({
+					"fnServerData" : function(sSource, aoData, fnCallback) {
+						$.httpSend({
+		                    url : '/tunnelweb/list/get',
+		                    type : 'get',
+		                    "data" : aoData,
+		                    success : function(resp) {
+		                    	fnCallback(resp);
+		                    }
+		                })
+					},
+					"language": {
+			            "url": "/static/three/datatables/Chinese.json"
+			        },
+			        "lengthMenu": [10, 50, 75, 100],
+			        "pageLength": 10,
+			        "autoWidth": true,
+			        "destroy": true,
+					"info": true,
+		            "paging": true,
+		            "processing": true,
+		            "serverSide": true,
+		            "serverSize":true,
+		            "ordering": false,
+		            "searching": false,
+					"columns" : [
+						{"data" : "autoid"},
+						{"data" : "deviceName"},
+						{
+							"data" : "isactive",
+							"fnCreatedCell":function(nTd, sData, oData, iRow, iCol) {
+								if(sData == "YES"){
+									$(nTd).html("<span style='color:#303f9f'>激活</span>");
+								}else{
+									$(nTd).html("<span style='color:#747474'>关闭</span>");
+								}
+							}
+						},
+						{"data" : "localIp"},
+						{"data" : "localPort"},
+						{"data" : "remotePort"},
+						{"data" : "tunnelType"},
+						{
+							"data" : "remarks",
+							"fnCreatedCell":function(nTd, sData, oData, iRow, iCol) {
+								if(sData.length < 10){
+									$(nTd).html(sData);
+								}else{
+									var tempval = sData.substring(0, 10) + "...";
+									$(nTd).html("<span title='"+ sData +"'>"+ tempval +"</span>");
+								}
+							}
+						},
+						{"data" : "ctime"},
+						{
+							"data" : "id",
+							"fnCreatedCell":function(nTd, sData, oData, iRow, iCol) {
+								var allhtml = "";
+								allhtml += '<a onclick="tunnelObj.openSSHTunnelBtn(this)" localPort="'+ oData.localPort +'" devid="'+ oData.deviceId +'" eid="'+ sData +'" title="以SSH客户端打开" class="btn-default halfway-fab" href="#" style="margin-right: 5px;"><i class="material-icons">polymer</i></a>';
+								
+								if(oData.isactive == "NO"){
+									allhtml += '<a onclick="tunnelObj.switchTunnelStatusBtn(this,1)" eid="'+ sData +'" title="激活穿透" class="btn-default halfway-fab" href="#" style="margin-right: 5px;"><i class="material-icons" style="color:#757474;">blur_on</i></a>';
+								}else{
+									allhtml += '<a onclick="tunnelObj.switchTunnelStatusBtn(this,0)" eid="'+ sData +'" title="关闭穿透" class="btn-default halfway-fab" href="#" style="margin-right: 5px;"><i class="material-icons">blur_off</i></a>';
+								}
+								allhtml += '<a onclick="tunnelObj.delTunnelBtn(this)" eid="'+ sData +'" title="删除" class="btn-default halfway-fab" href="#" style="margin-right: 5px;"><i class="material-icons" style="color:red;">delete</i></a>';
+								$(nTd).html(allhtml);
+							}
+						},
+					]
+				});
+			},
+			openSSHTunnelBtn: function(cur){
+				$.httpSend({
+                    url : '/remotecpe/start',
+                    type : 'post',
+                    data : JSON.stringify({
+                        deviceId: $(cur).attr("devid"),
+                        type: 'ssh',
+                        localPort: $(cur).attr("localPort")
+                    }),
+                    success : function(resp) {
+                    	if (!resp.success) {
+                            M.toast({
+                                html : resp.message
+                            });
+                            resourceManageObj.switchRemoteingUI(params.deviceId, false);
+                            return;
+                        }
+                        window.open("webdesktop?uuid=" + resp.content.uuid);
+                    }
+                })
+			},
+			switchTunnelStatusBtn: function(cur,status){
+				$.httpSend({
+                    url : '/tunnelweb/tunnel/switch',
+                    type : 'post',
+                    data : JSON.stringify({
+                        id:$(cur).attr("eid"),
+                        status: status == 1 ? "YES":"NO",
+                    }),
+                    success : function(resp) {
+                        tunnelObj.table.draw(false);
+                    }
+                })
+			},
+			delTunnelBtn: function(cur){
+				var eid = $(cur).attr("eid");
+				$.conf({
+                    title: "删除提醒",
+                    content: "是否删除此记录",
+                    okfun: function(){
+                    	$.httpSend({
+                            url : '/tunnelweb/tunnel/del',
+                            type : 'post',
+                            data : JSON.stringify({
+                                id:eid,
+                            }),
+                            success : function(resp) {
+                                tunnelObj.table.draw(false);
+                            }
+                        })
+                    }
+                });
+			}
+		}
+
+		$(function() {
+			tunnelObj.init();
+		});
+	</script>
+</body>
+
+</html>

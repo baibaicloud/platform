@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style type="text/css">
+.setting-page {
+	padding-top: 10px;
+}
+
+.am-mgrole div a {
+	display: none;
+}
+
+.am-mgrole:hover div a {
+	display: block;
+	color: red;
+}
+
+.am-am-user-delete:hover {
+	color: red;
+}
+
+.am-rolenenodeitem i {
+	display: none;
+}
+
+.am-rolenenodeitem:hover i {
+	display: inline;
+}
+
+.am-rolenenodeitem .close:hover {
+	color:red;
+}
+</style>
+</head>
+
+<body>
+	<div id="am-page-panel" class="am-page">
+		<div class="row">
+			<ul class="tabs">
+				<li class="tab col s6"><a class="active" href="#am-account-me-panel">员工管理</a></li>
+				<li class="tab col s6"><a onclick="accountmgObj.roleSwitchPanelBtn()" href="#am-account-role-panel">角色管理</a></li>
+			</ul>
+			<div id="am-account-me-panel" class="col s12">
+				<div style="margin-top: 10px;">
+					<a onclick="accountmgObj.showAddAccountPanelBtn()" class="waves-effect waves-light btn-small blue gback modal-trigger" href="#am-account-add-modal"><i class="material-icons left">add</i>添加员工</a>
+					<div class="nav-wrapper right">
+						<form>
+							<div class="input-field">
+								<input tag="am-account-search" type="search" placeholder="登录名称搜索"><i onclick="accountmgObj.searchenuserBtn()" class="material-icons">search</i>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div id="am-account-me-list-table">
+					<table class="highlight">
+						<thead>
+							<tr>
+								<th column="username">登录名称</th>
+								<th column="email">邮箱</th>
+								<th column="rolename">角色</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+					<div class="progress" style="margin: 0px;">
+						<div class="indeterminate"></div>
+					</div>
+					<div tag="tr" class="hide">
+						<trr> <tdd>{username}</tdd> <tdd>{email}</tdd> <tdd>{rolename}</tdd> <tdd> <a tagid="{id}" title="编辑" onclick="accountmgObj.editEnterpriseUserBtn(this)" class="btn-default waves-effect modal-trigger" href="#am-account-add-modal"><i class="material-icons">edit</i></a> <a tagid="{id}" title="删除" onclick="accountmgObj.removeEnterpriseUserBtn(this)" class="btn-default waves-effect am-am-user-delete"><i class="material-icons">delete</i></a> </tdd> </trr>
+					</div>
+					<ul class="pagination right">
+						<li class=""><a tag="cur-page-count">0</a>当前页</li>
+						<li class=""><a tag="page-count">0</a>总页</li>
+						<li class=""><a tag="total-count">0</a>条</li>
+						<li tag="btn-left"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+						<span tag="page-btn-penal"></span>
+						<li tag="btn-right"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+					</ul>
+				</div>
+			</div>
+			<div id="am-account-role-panel" class="col s12">
+				<div style="margin-top: 10px;">
+					<a onclick="accountmgObj.showAddRoleAccountPanelBtn()" class="waves-effect waves-light btn-small blue gback modal-trigger" href="#am-account-role-add-modal"><i class="material-icons left">add</i>添加角色</a>
+				</div>
+				<div class="row">
+					<div class="col s4" style="padding: 0px;">
+						<ul class="collection with-header">
+							<li class="collection-header" style="background-color: #f9f7f7;"><h6>角色列表</h6></li>
+							<div id="am-role-panel" style="height: 100%;"></div>
+						</ul>
+					</div>
+					<div class="col s8">
+						<ul class="collection with-header">
+							<li class="collection-header" style="background-color: #f9f7f7;">
+								<h6>角色对应的权限</h6>
+								<div id="am-role-right-menu-panel" style="position: absolute; top: 12px; right: 10px;" class="hide">
+									<a data-position="top" data-tooltip="编辑角色名称" onclick="accountmgObj.showEditRoleAccountPanelBtn()" class="tooltipped waves-effect waves-light btn-small blue gback modal-trigger" href="#am-account-role-edit-modal"><i class="material-icons">edit</i></a> <a data-position="top" data-tooltip="添加节点" onclick="accountmgObj.loadNenodeTreeBtn()" class="tooltipped waves-effect waves-light btn-small blue gback modal-trigger" href="#am-nenode-modal"><i class="material-icons">add</i></a>
+								</div>
+							</li>
+							<li class="collection-item"><label> <input onclick="accountmgObj.updateRoleRightBtn(this)" value="nenode_manage" type="checkbox" tag="am-role-right" /> <span>管理节点</span>
+							</label></li>
+							<li class="collection-item"><label> <input onclick="accountmgObj.updateRoleRightBtn(this)" value="enterprise_manage" type="checkbox" tag="am-role-right" /> <span>企业管理</span>
+							</label></li>
+							<li class="collection-item"><label> <input onclick="accountmgObj.updateRoleRightBtn(this)" value="add_device" type="checkbox" tag="am-role-right" /> <span>网元管理</span>
+							</label></li>
+							<li class="collection-item"><label> <input onclick="accountmgObj.updateRoleRightBtn(this)" value="tunnel_manage" type="checkbox" tag="am-role-right" /> <span>内网穿透</span>
+                            </label></li>
+							<li class="collection-header" style="background-color: #f9f7f7;">
+								<h6>节点</h6>
+							</li>
+							<li id="am-role-nenode-panel" style="padding: 10px;">拥有所有节点</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 添加节点模态框 -->
+	<div id="am-nenode-modal" class="modal modal-fixed-footer">
+		<div class="modal-content">
+			<h6>请选择要添加节点</h6>
+			<div id="am-nenode-modal-tree"></div>
+		</div>
+		<div class="modal-footer">
+			<a href="#!" class="modal-close" style="margin-right: 20px;">取消</a> <a href="#!" onclick="accountmgObj.selectNenodeTreeBtn()" class="modal-close waves-effect btn gback">确定</a>
+		</div>
+	</div>
+
+	<div id="am-role-nenode-panel-item-template" class="hide">
+		<div class="chip am-rolenenodeitem" tid="{id}">
+			{title}<i class="close material-icons" tid="{id}" onclick="accountmgObj.delRoleNenodeBtn(this)">close</i>
+		</div>
+	</div>
+
+	<div id="am-account-add-modal" class="modal">
+		<div class="modal-content">
+			<h5 id="am-account-add-modal-title">添加员工</h5>
+			<div class="row">
+				<form class="col s12">
+					<div class="row">
+						<div id="am-username-panel" class="input-field col s12">
+							<input id="am-username" type="text"><label for="am-username">员工的登录名称</label>
+						</div>
+						<div class="input-field col s12">
+							<select id="am-role-list-panel"></select> <label>请选择角色</label>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<a href="#!" class="modal-close waves-effect waves-green btn-flat">取消</a> <a id="am-account-add-modal-btn-add" onclick="accountmgObj.addAccountBtn()" class="waves-effect waves-light btn-small blue gback"><i class="material-icons left">add</i>添加</a> <a id="am-account-add-modal-btn-edit" onclick="accountmgObj.editAccountBtn(this)" class="waves-effect waves-light btn-small blue gback"><i class="material-icons left">edit</i>修改</a>
+		</div>
+	</div>
+
+	<div id="am-account-role-add-modal" class="modal">
+		<div class="modal-content">
+			<h5>添加角色</h5>
+			<div class="row">
+				<form class="col s12">
+					<div class="row">
+						<div class="input-field col s12">
+							<input id="am-add-role-title" type="text"><label for="am-add-role-title">角色名称</label>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<a href="#!" class="modal-close waves-effect waves-green btn-flat">取消</a> <a onclick="accountmgObj.addRoleBtn()" class="waves-effect waves-light btn-small blue gback"><i class="material-icons left">add</i>添加</a>
+		</div>
+	</div>
+
+	<div id="am-account-role-edit-modal" class="modal">
+		<div class="modal-content">
+			<h5>编辑角色</h5>
+			<div class="row">
+				<form class="col s12">
+					<div class="row">
+						<div class="input-field col s12">
+							<input id="am-edit-role-title" type="text"><label for="am-edit-role-title">角色名称</label>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<a href="#!" class="modal-close waves-effect waves-green btn-flat">取消</a> <a onclick="accountmgObj.editRoleBtn()" class="waves-effect waves-light btn-small blue gback"><i class="material-icons left">edit</i>确定</a>
+		</div>
+	</div>
+
+	<div id="am-role-item-template" style="display: none">
+		<li amroleitemid="{id}" rolename={title} isdefault="{isdefault}" onclick="accountmgObj.selectRoleItemBtn(this)" class="collection-item am-mgrole hoverable amroleitem" style="height: 46px; cursor: pointer;">
+			<div>
+				<span rolename>{title}</span><a onclick="accountmgObj.delRoleBtn(this)" href="#!" tid="{id}" title="删除" class="secondary-content waves-effect"><i class="material-icons">delete</i></a>
+			</div>
+		</li>
+	</div>
+
+	<!--  Scripts-->
+	<script src="/static/js/jquery-2.1.1.min.js"></script>
+	<script src="/static/js/materialize.min.js"></script>
+	<script src="/static/js/jquery.md5.js"></script>
+	<script src="/static/three/jstree/jstree.js" charset="utf-8"></script>
+	<script src="/static/js/jquery.nicescroll.min.js" charset="utf-8"></script>
+	<script src="/static/js/http.js"></script>
+	<script src="/static/js/utils.js"></script>
+	<script src="/static/js/tables.js"></script>
+	<script type="text/javascript">
+		var accountmgObj = {
+			table : null,
+			nenodeTree : null,
+			selectRoleId : null,
+			init : function() {
+				M.AutoInit();
+				var amtable = tableObj.table("am-account-me-list-table", 5);
+				accountmgObj.table = amtable;
+				amtable.load = function(table) {
+					$.httpSend({
+						url : "/enterprise/user/list/get",
+						type : 'post',
+						data : JSON.stringify({
+							page : table.page,
+							size : table.size,
+							username : $("input[tag=am-account-search]").val()
+						}),
+						success : function(resp) {
+							if (!resp.success) {
+								M.toast({
+									html : resp.message
+								});
+								return;
+							}
+							table.loadCallback(resp.content);
+						}
+					});
+				}
+				amtable.init();
+				$("#am-role-panel").niceScroll({
+					cursorcolor : "#cccccc",
+					cursorwidth : "10px",
+					cursoropacitymax : 0.9
+				});
+			},
+			selectNenodeTreeBtn : function() {
+				var ids = $('#am-nenode-modal-tree').jstree(true).get_selected();
+				if(ids.length == 0){
+					return;
+				}
+				
+				$.httpSend({
+					url : '/enterprise/role/nenode/update',
+					type : 'post',
+					data : JSON.stringify({
+						roleId : accountmgObj.selectRoleId,
+						ids : ids.join(","),
+					}),
+					success : function(resp) {
+						if (!resp.success) {
+							M.toast({
+								html : resp.message
+							});
+							return;
+						}
+
+						accountmgObj.selectRoleNenodeItem(
+								accountmgObj.selectRoleId, "NO");
+					}
+				})
+			},
+			loadNenodeTreeBtn : function() {
+				if($('#am-nenode-modal-tree').html() != ""){
+					$('#am-nenode-modal-tree').jstree(true).destroy();
+				}
+				$.httpSend({
+					url : '/enterprise/nenode/list/get',
+					type : 'post',
+					data : JSON.stringify({
+						roleId : accountmgObj.selectRoleId,
+					}),
+					success : function(resp) {
+						var list = new Array();
+						resp.content.forEach(function(item, index) {
+							list.push({
+								id : item.id,
+								text : item.title,
+								parent : item.pid,
+								state: {
+									selected: (item.checked == "true"),
+								}
+							});
+						});
+						accountmgObj.loadNenodeTreeHandler(list);
+					}
+				})
+			},
+			delRoleNenodeBtn : function(cur) {
+				var neodeId = $(cur).attr("tid");
+				$.httpSend({
+					url : '/enterprise/role/nenode/del',
+					type : 'post',
+					data : JSON.stringify({
+						nenodeId : neodeId,
+						roleId : accountmgObj.selectRoleId,
+					}),
+					success : function(resp) {
+						if (!resp.success) {
+							M.toast({
+								html : resp.message
+							});
+							return;
+						}
+
+						M.toast({
+							html : "删除成功"
+						});
+					}
+				})
+			},
+			loadNenodeTreeHandler : function(list) {
+				$("#am-nenode-modal-tree").html("");
+				$('#am-nenode-modal-tree').jstree({
+					"plugins" : ["wholerow", "checkbox" ],
+		            'core' : {
+		                "themes" : {
+		                    "variant" : "large",
+		                    "stripes" : true
+		                },
+		                "check_callback" : true,
+		                "multiple" : true,
+		                "animation" : 0,
+		                'data' : list
+		            },
+		        }).on('loaded.jstree', function(e, data) {
+		            var inst = data.instance;
+		            var obj = inst.get_node(e.target.firstChild.firstChild.lastChild);
+		            inst.open_node(obj);
+		        });
+			},
+			updateRoleRightBtn : function(cur) {
+				if (accountmgObj.selectRoleId == null
+						|| accountmgObj.selectRoleId == undefined) {
+					M.toast({
+						html : "请选择一个角色"
+					});
+					return;
+				}
+
+				var target = $(cur).attr("value");
+				var isadd = $(cur).prop("checked") + "";
+				$.httpSend({
+					url : '/enterprise/role/right/update',
+					type : 'post',
+					data : JSON.stringify({
+						roleId : accountmgObj.selectRoleId,
+						target : target,
+						isadd : isadd,
+					}),
+					success : function(resp) {
+						if (!resp.success) {
+							M.toast({
+								html : resp.message
+							});
+							return;
+						}
+					}
+				});
+			},
+			selectRoleRightItem : function(roleId, isdefault) {
+				if (isdefault == "YES") {
+					$("input[tag=am-role-right]").attr("disabled", true);
+					$("input[tag=am-role-right]").prop("checked", true);
+					$("#am-role-right-menu-panel").addClass("hide");
+					$("#am-role-nenode-panel").html("拥有所有节点");
+				} else {
+					$("input[tag=am-role-right]").attr("disabled", false);
+					$("#am-role-right-menu-panel").removeClass("hide");
+				}
+
+				accountmgObj.selectRoleId = roleId;
+				accountmgObj.loadRoleRightList(roleId);
+				$("li[amroleitemid=" + roleId + "]").addClass("active");
+			},
+			loadRoleRightList : function(roleId) {
+				$.httpSend({
+					url : '/enterprise/role/right/list/get',
+					type : 'post',
+					data : JSON.stringify({
+						roleId : roleId
+					}),
+					success : function(resp) {
+						for ( var index in resp.content) {
+							var target = resp.content[index];
+							$("input[value=" + target + "]").prop("checked", true);
+						}
+					}
+				});
+			},
+			selectRoleNenodeItem : function(roleId, isdefault) {
+				if (isdefault == "YES") {
+					$("#am-role-nenode-panel").html("拥有所有节点");
+					return;
+				}
+
+				$("#am-role-nenode-panel").html("加载中...");
+				$("#am-role-nenode-panel").removeClass("hide");
+
+				$.httpSend({
+					url : '/enterprise/role/nenode/list/get',
+					type : 'post',
+					data : JSON.stringify({
+						roleId : roleId
+					}),
+					success : function(resp) {
+
+						if (resp.content.length == 0) {
+							$("#am-role-nenode-panel").html("空节点");
+							return;
+						}
+
+						$("#am-role-nenode-panel").html("");
+
+						for ( var index in resp.content) {
+							var item = resp.content[index];
+							var html = $("#am-role-nenode-panel-item-template")
+									.html();
+							html = html.replace(new RegExp("{id}", "gm"),
+									item.id);
+							html = html.replace(new RegExp("{title}", "gm"),
+									item.title);
+							$("#am-role-nenode-panel").append(html);
+						}
+					}
+				});
+			},
+			selectRoleItemBtn : function(cur) {
+				$("input[tag=am-role-right]").prop("checked", false);
+				$(".amroleitem").removeClass("active");
+				$(cur).addClass("active");
+				accountmgObj.selectRoleRightItem($(cur).attr("amroleitemid"),
+						$(cur).attr("isdefault"));
+				accountmgObj.selectRoleNenodeItem($(cur).attr("amroleitemid"),
+						$(cur).attr("isdefault"));
+			},
+			roleSwitchPanelBtn : function() {
+				accountmgObj.loadRoleList(true);
+			},
+			loadRoleList : function(isfist) {
+				$("#am-role-panel").html("加载中...");
+				$.httpSend({
+					url : '/enterprise/role/list/get',
+					type : 'post',
+					success : function(resp) {
+						$("#am-role-panel").html("");
+						for ( var index in resp.content) {
+							var item = resp.content[index];
+							var html = $("#am-role-item-template").html();
+							html = html.replace(new RegExp("{id}", "gm"),
+									item.id);
+							html = html.replace(new RegExp("{title}", "gm"),
+									item.title);
+							html = html.replace(
+									new RegExp("{isdefault}", "gm"),
+									item.isdefault);
+							$("#am-role-panel").append(html);
+						}
+						if (isfist) {
+							accountmgObj.selectRoleRightItem(
+									resp.content[0].id, "YES");
+						}
+					}
+				});
+			},
+			showAddRoleAccountPanelBtn : function() {
+				$("#am-add-role-title").val("");
+			},
+			switchAccountAddEditModal : function(type) {
+				if (type == "add") {
+					$("#am-account-add-modal-title").html("添加员工");
+					$("#am-username-panel").removeClass("hide");
+					$("#am-account-add-modal-btn-add").removeClass("hide");
+					$("#am-account-add-modal-btn-edit").addClass("hide");
+					return;
+				}
+
+				if (type == "edit") {
+					$("#am-account-add-modal-title").html("编辑员工");
+					$("#am-username-panel").addClass("hide");
+					$("#am-account-add-modal-btn-add").addClass("hide");
+					$("#am-account-add-modal-btn-edit").removeClass("hide");
+					return;
+				}
+			},
+			showEditRoleAccountPanelBtn : function() {
+				var rolename = $(
+						"li[amroleitemid=" + accountmgObj.selectRoleId + "]")
+						.attr("rolename");
+				$("#am-edit-role-title").val(rolename);
+				$("label[for=am-edit-role-title]").addClass("active");
+			},
+			delRoleBtn : function(cur) {
+				var roleinfo = {
+					id : $(cur).attr("tid"),
+				}
+
+				$.httpSend({
+					url : '/enterprise/role/del',
+					type : 'post',
+					data : JSON.stringify(roleinfo),
+					success : function(resp) {
+						if (!resp.success) {
+							M.toast({
+								html : resp.message
+							});
+							return;
+						}
+
+						M.toast({
+							html : "删除成功"
+						});
+						$(cur).parent().parent().remove();
+						accountmgObj.loadRoleList(true);
+					}
+				});
+			},
+			cleanSelectItem : function() {
+				accountmgObj.selectRoleId = null;
+				$("input[tag=am-role-right]").prop("checked", false);
+				$("input[tag=am-role-right]").attr("disabled", true);
+				$("#am-role-right-menu-panel").addClass("hide");
+			},
+			addRoleBtn : function() {
+				var roleinfo = {
+					title : $("#am-add-role-title").val().trim(),
+				}
+
+				if (roleinfo.title == "") {
+					M.toast({
+						html : "参数填写未完整"
+					});
+					return;
+				}
+
+				$.httpSend({
+					url : '/enterprise/role/add',
+					type : 'post',
+					data : JSON.stringify(roleinfo),
+					success : function(resp) {
+						if (!resp.success) {
+							M.toast({
+								html : resp.message
+							});
+							return;
+						}
+						accountmgObj.loadRoleList(true);
+						M.toast({
+							html : "添加成功"
+						});
+						$('#am-account-role-add-modal').modal('close');
+					}
+				});
+			},
+			editRoleBtn : function() {
+				var roleinfo = {
+					id : accountmgObj.selectRoleId,
+					title : $("#am-edit-role-title").val().trim(),
+				}
+
+				if (roleinfo.title == "") {
+					M.toast({
+						html : "参数填写未完整"
+					});
+					return;
+				}
+
+				$.httpSend({
+					url : '/enterprise/role/update',
+					type : 'post',
+					data : JSON.stringify(roleinfo),
+					success : function(resp) {
+						if (!resp.success) {
+							M.toast({
+								html : resp.message
+							});
+							return;
+						}
+						M.toast({
+							html : "修改成功"
+						});
+						$("li[amroleitemid=" + accountmgObj.selectRoleId + "]")
+								.attr("rolename", roleinfo.title);
+						$("li[amroleitemid=" + accountmgObj.selectRoleId + "]")
+								.find("span[rolename]").html(roleinfo.title);
+						$('#am-account-role-edit-modal').modal('close');
+					}
+				});
+			},
+			showAddAccountPanelBtn : function() {
+				accountmgObj.switchAccountAddEditModal("add");
+				$("#am-username").val("");
+				accountmgObj.loadRoleListAccountManger();
+			},
+			loadRoleListAccountManger: function(){
+				$.httpSend({
+                    url : '/enterprise/role/list/get',
+                    type : 'post',
+                    success : function(resp) {
+                        $("#am-role-list-panel").html("");
+                        for ( var index in resp.content) {
+                            var item = resp.content[index];
+                            $("#am-role-list-panel").append(
+                                    '<option value="'+ item.id +'">'
+                                            + item.title + '</option>');
+                        }
+                        $('#am-role-list-panel').formSelect();
+                    }
+                });
+			},
+			searchenuserBtn : function() {
+				accountmgObj.table.refresh(true);
+			},
+			editEnterpriseUserBtn: function(cur){
+				$("#am-account-add-modal-btn-edit").attr("uid", $(cur).attr("tagid"));
+				accountmgObj.loadRoleListAccountManger();
+				accountmgObj.switchAccountAddEditModal("edit");
+			},
+			removeEnterpriseUserBtn : function(cur) {
+				$.msgbox({
+					msg : "是否确定删除此用户",
+					data : {
+						id : $(cur).attr("tagid")
+					},
+					ok : function(data) {
+						$.httpSend({
+							url : '/enterprise/user/del',
+							type : 'post',
+							data : JSON.stringify(data),
+							success : function(resp) {
+								if (!resp.success) {
+									M.toast({
+										html : resp.message
+									});
+									return;
+								}
+
+								accountmgObj.table.refresh();
+								M.toast({
+									html : "删除成功"
+								});
+							}
+						});
+					}
+				});
+			},
+			editAccountBtn: function(cur){
+				var userinfo = {
+						uid: $(cur).attr("uid"),
+					    roleId : $("#am-role-list-panel").val(),
+	            }
+				
+				if (userinfo.roleId == "" || userinfo.uid == "") {
+                    M.toast({
+                        html : "参数填写未完整"
+                    });
+                    return;
+                }
+				
+				$.httpSend({
+                    url : '/enterprise/user/edit',
+                    type : 'post',
+                    data : JSON.stringify(userinfo),
+                    success : function(resp) {
+                        if (!resp.success) {
+                            M.toast({
+                                html : resp.message
+                            });
+                            return;
+                        }
+
+                        accountmgObj.table.refresh();
+                        M.toast({
+                            html : "修改成功"
+                        });
+                        $('#am-account-add-modal').modal('close');
+                    }
+                });
+			},
+			addAccountBtn : function() {
+				var userinfo = {
+					username : $("#am-username").val().trim(),
+					roleId : $("#am-role-list-panel").val(),
+				}
+
+				if (userinfo.username == "" || userinfo.roleId == "") {
+					M.toast({
+						html : "参数填写未完整"
+					});
+					return;
+				}
+
+				$.httpSend({
+					url : '/enterprise/user/add',
+					type : 'post',
+					data : JSON.stringify(userinfo),
+					success : function(resp) {
+						if (!resp.success) {
+							M.toast({
+								html : resp.message
+							});
+							return;
+						}
+
+						accountmgObj.table.refresh();
+						M.toast({
+							html : "添加成功"
+						});
+						$('#am-account-add-modal').modal('close');
+					}
+				});
+			}
+		}
+
+		accountmgObj.init();
+	</script>
+</body>
+
+</html>

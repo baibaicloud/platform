@@ -1,0 +1,127 @@
+/* Custom Stylesheet */
+/**
+ * Use this file to override Materialize files so you can update
+ * the core Materialize files in the future
+ *
+ * Made By MaterializeCSS.com
+ */
+
+.toast {
+	background-color: #2196F3;
+}
+
+.gradient-45deg-indigo-purple {
+    background: #303f9f;
+    background: -webkit-linear-gradient(45deg, #303f9f, #7b1fa2) !important;
+    background: -moz- oldlinear-gradient(45deg, #303f9f, #7b1fa2) !important;
+    background: -o-linear-gradient(45deg, #303f9f, #7b1fa2) !important;
+    background: linear-gradient(45deg, #303f9f, #7b1fa2) !important;
+}
+
+.gback {
+    background: #303f9f;
+    background: -webkit-linear-gradient(45deg, #303f9f, #7b1fa2) !important;
+    background: -moz- oldlinear-gradient(45deg, #303f9f, #7b1fa2) !important;
+    background: -o-linear-gradient(45deg, #303f9f, #7b1fa2) !important;
+    background: linear-gradient(45deg, #303f9f, #7b1fa2) !important;
+}
+
+.fwhite {
+	color: white;
+}
+
+.dataTable td, th {
+	border-radius: 0px;
+}
+
+.dataTable .sorting_disabled {
+	border-bottom: 1px solid #E0E0E0;
+}
+
+.toast {
+	background: #303f9f;
+    background: -webkit-linear-gradient(45deg, #303f9f, #7b1fa2) !important;
+    background: -moz- oldlinear-gradient(45deg, #303f9f, #7b1fa2) !important;
+    background: -o-linear-gradient(45deg, #303f9f, #7b1fa2) !important;
+    background: linear-gradient(45deg, #303f9f, #7b1fa2) !important;
+}
+
+.txtnone {
+	color:red;
+}
+
+.txtred {
+	color:red;
+}
+
+.noselect {
+	pointer-events: none;
+}
+
+.gnew {
+	font-weight: 300;
+    font-size: 0.8rem;
+    color: #fff;
+    background-color: #26a69a;
+    border-radius: 2px;
+    padding:2px;
+}
+
+.tabs .tab a {
+    color: rgba(118, 32, 161, 0.7);
+}
+
+.tabs .tab a:hover, .tabs .tab a.active {
+    color: #7621A2;
+}
+
+.tabs .tab a:focus, .tabs .tab a:focus.active {
+    background-color: rgba(89, 45, 161, 0.2);
+}
+
+.tabs .indicator {
+    background-color: #592DA1;
+}
+
+.pagination li.active {
+    background-color: #5B2DA1;
+}
+
+.jstree-wholerow-ul .jstree-wholerow {
+    background-color: white;
+}
+
+.jstree-wholerow .jstree-wholerow-clicked{
+	background-color: white;
+}
+
+.jstree-default .jstree-wholerow-clicked {
+  background: #303f9f;
+  background: -webkit-linear-gradient(45deg, #303f9f, #7b1fa2) !important;
+  background: -moz- oldlinear-gradient(45deg, #303f9f, #7b1fa2) !important;
+  background: -o-linear-gradient(45deg, #303f9f, #7b1fa2) !important;
+  background: linear-gradient(45deg, #303f9f, #7b1fa2) !important;
+}
+
+.jstree-default > .jstree-wholerow-ul .jstree-clicked {
+  color:white
+}
+
+.jstree-wholerow {
+	height: 42px;
+}
+
+.jstree-default-contextmenu {
+	z-index: 1;
+}
+
+.node_name {
+	color: #5F2BA1;
+}
+
+.noselect {
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}

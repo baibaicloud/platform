@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+<title>注册</title>
+
+<!-- CSS  -->
+<link rel="Shortcut Icon" href="/static/favicon.ico" type="image/x-icon" />
+<link href="/static/css/icon.css" rel="stylesheet">
+<link href="/static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<link href="/static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<style type="text/css">
+.signup-page form .row {
+    margin-bottom: 0px;
+}
+</style>
+</head>
+
+<body>
+	<nav class="blue gback" role="navigation">
+		<div class="nav-wrapper container">
+			<div class="brand-logo left noselect" style="padding-left:10px;font-size: 20px; margin-top: -5px;">
+                <img src="/static/images/logo.png" width="40px;" style="vertical-align: middle;">&nbsp;百百
+            </div>
+		</div>
+	</nav>
+
+	<div class="container signup-page">
+		<div class="section">
+			<div class="row">
+				<br />
+				<div class="col s3"></div>
+				<div class="col s6">
+					<div class="row">
+						<div class="col s12">
+							<ul class="tabs">
+								<li class="tab col s6"><a href="#signup-user-panel">个人</a></li>
+								<li class="tab col s6"><a href="#signup-enterprise-panel">企业</a></li>
+							</ul>
+							<div class="card" style="margin-top: 0px; border-radius: 0px;">
+								<div class="card-content">
+									<div class="row">
+										<form id="signup-user-panel" class="col s12">
+											<div class="row">
+												<div class="input-field col s12">
+													<input id="user_email" type="email" class="validate"> <label for="user_email">邮件</label> <span style="color: #9e9e9e;">邮箱用来找回密码,请注意填写</span>
+												</div>
+											</div>
+											<div class="row">
+												<div class="input-field col s12">
+													<input id="user_username" type="text" class="validate"> <label for="user_username">用户名称</label>
+												</div>
+											</div>
+											<div class="row">
+												<div class="input-field col s12">
+													<input id="user_password" type="password" class="validate"> <label for="user_password">密码</label>
+												</div>
+											</div>
+											<div class="row">
+												<div class="input-field col s12">
+													<input id="user_passwordtwo" type="password" class="validate"> <label for="user_passwordtwo">确认密码</label>
+												</div>
+											</div>
+										</form>
+										<form id="signup-enterprise-panel" class="col s12">
+											<div class="row">
+												<div class="input-field col s12">
+													<input id="en_name" type="text" class="validate"> <label for="en_name">企业名称</label>
+												</div>
+											</div>
+											<div class="row">
+												<div class="input-field col s12">
+													<input id="en_user_email" type="email" class="validate"> <label for="en_user_email">个人邮件</label> <span style="color: #9e9e9e;">邮箱用来找回密码,请注意填写</span>
+												</div>
+											</div>
+											<div class="row">
+												<div class="input-field col s12">
+													<input id="en_user_username" type="text" class="validate"> <label for="en_user_username">用户名称</label>
+												</div>
+											</div>
+											<div class="row">
+												<div class="input-field col s12">
+													<input id="en_user_password" type="password" class="validate"> <label for="en_user_password">密码</label>
+												</div>
+											</div>
+											<div class="row">
+												<div class="input-field col s12">
+													<input id="en_user_passwordtwo" type="password" class="validate"> <label for="en_user_passwordtwo">确认密码</label>
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+								<div class="card-action right-align">
+									<a href="/login">已有账号</a> <a id="btn-sigup" class="waves-effect waves-light btn-small blue gback"><i class="material-icons left">cloud</i>注 册</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col s3"></div>
+			</div>
+		</div>
+	</div>
+
+	<!--  Scripts-->
+	<script src="/static/js/jquery-2.1.1.min.js"></script>
+	<script src="/static/js/jquery.aop.min.js"></script>
+	<script src="/static/js/materialize.min.js"></script>
+	<script src="/static/js/http.js"></script>
+
+	<script type="text/javascript">
+		$(function() {
+
+			var sigupObj = {
+				init : function() {
+					$('.tabs').tabs();
+					$("#btn-sigup").click(sigupObj.onSigup);
+				},
+				onSigup : function() {
+					var isuser = $("a[href=#signup-user-panel]").hasClass("active");
+					
+					var params = null;
+					
+					if(isuser){
+						params = {
+	                        email : $("#user_email").val(),
+	                        username : $("#user_username").val(),
+	                        password : $("#user_password").val(),
+	                        passwordtwo : $("#user_passwordtwo").val(),
+	                    }
+					}else{
+						params = {
+								enname: $("#en_name").val(),
+	                            email : $("#en_user_email").val(),
+	                            username : $("#en_user_username").val(),
+	                            password : $("#en_user_password").val(),
+	                            passwordtwo : $("#en_user_passwordtwo").val(),
+	                        }
+					}
+
+					params.isuser = isuser + "";
+					if (isuser && (params.email == "" || params.username == "" || params.password == "" || params.passwordtwo == "")) {
+						M.toast({html : '参数填写未完整'});
+						return;
+					}
+					
+					if (!isuser && (params.enname == "" || params.email == "" || params.username == "" || params.password == "" || params.passwordtwo == "")) {
+                        M.toast({html : '参数填写未完整'});
+                        return;
+                    }
+
+					if (params.email.indexOf("@") == -1) {
+						M.toast({
+							html : '邮箱格式错误'
+						});
+						return;
+					}
+
+					if (params.username.length < 6) {
+						M.toast({
+							html : '用户名称字符个数最少6位'
+						});
+						return;
+					}
+
+					if (params.password.length < 6) {
+						M.toast({
+							html : '密码字符个数最少6位'
+						});
+						return;
+					}
+
+					if (params.password !== params.passwordtwo) {
+						M.toast({
+							html : '两次输入的密码不一致'
+						});
+						return;
+					}
+
+					$.httpSend({
+						url : '/user/signup',
+						type : 'post',
+						data : JSON.stringify(params),
+						success : function(resp) {
+							if (resp.success) {
+								M.toast({
+									html : '注册成功'
+								});
+								setTimeout(function() {
+									window.location.href = '/login';
+								}, 1000);
+								return;
+							}
+							M.toast({
+								html : resp.message
+							});
+						}
+					});
+				}
+			}
+
+			sigupObj.init();
+		});
+	</script>
+</body>
+
+</html>

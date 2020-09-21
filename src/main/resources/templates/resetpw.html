@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+<title>重置密码</title>
+
+<!-- CSS  -->
+<link rel="Shortcut Icon" href="/static/favicon.ico" type="image/x-icon" />
+<link href="/static/css/icon.css" rel="stylesheet">
+<link href="/static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<link href="/static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+</head>
+
+<body>
+	<nav class="blue gback" role="navigation">
+		<div class="nav-wrapper container">
+			<div class="brand-logo left noselect" style="padding-left:10px;font-size: 20px; margin-top: -5px;">
+                <img src="/static/images/logo.png" width="40px;" style="vertical-align: middle;">&nbsp;百百
+            </div>
+		</div>
+	</nav>
+	<div class="container">
+		<div class="section">
+		    <div id="resetpw-setresetpanel" class="row">
+                <br />
+                <div class="col s3"></div>
+                <div class="col s6">
+                      <div class="input-field">
+                        <input id="resetpw-email" type="email">
+                        <label for="resetpw-email">邮箱地址</label>
+                      </div>
+                      <button onclick="resetpwObj.sendResetClick()" class="btn waves-effect waves-light gback align-right" name="action">确定
+                        <i class="material-icons right">send</i>
+                      </button>
+                      <a href="/login" style="margin-left: 20px;">返回登录</a>
+                </div>
+                <div class="col s3"></div>
+            </div>
+			<div id="resetpw-resetpanel" class="row hide">
+				<br />
+				<div class="col s3"></div>
+				<div class="col s6">
+				      <div class="input-field">
+                        <input disabled id="setring-ackemail" type="text">
+                        <label for="setring-ackemail" class="active">邮箱</label>
+                      </div>
+                      <div class="input-field">
+                        <input id="setring-code" type="text">
+                        <label for="setring-code">验证码（请查收邮件）</label>
+                      </div>
+		              <div class="input-field">
+		                <input id="setring-pw1" type="password">
+		                <label for="setring-pw1">新密码</label>
+		              </div>
+		              <div class="input-field">
+		                <input id="setring-pw2" type="password">
+		                <label for="setring-pw2">新密码确认</label>
+		              </div>
+		              <button onclick="resetpwObj.resetClick()" class="btn waves-effect waves-light gback align-right" name="action">重置密码
+		                <i class="material-icons right">send</i>
+		              </button>
+		              <a href="/login" style="margin-left: 20px;">返回登录</a>
+				</div>
+				<div class="col s3"></div>
+			</div>
+		</div>
+	</div>
+
+	<!--  Scripts-->
+	<script src="/static/js/jquery-2.1.1.min.js"></script>
+	<script src="/static/js/jquery.aop.min.js"></script>
+	<script src="/static/js/jquery.md5.js"></script>
+	<script src="/static/js/materialize.min.js"></script>
+	<script src="/static/js/http.js"></script>
+	
+	<script type="text/javascript">
+		var resetpwObj = {
+				sendResetClick: function(){
+					var email = $("#resetpw-email").val();
+					if(email == ""){
+						return;
+					}
+					
+					M.toast({html: "已在处理中，请稍后"});
+                    $.httpSend({
+                        url: '/user/password/reset',
+                        type: 'post',
+                        data: JSON.stringify({
+                            email: email
+                        }),
+                        success: function(resp){
+                            if(!resp.success){
+                                M.toast({html: resp.message});
+                                return;
+                            }
+                            M.toast({html: "重置密码的验证码已发送给邮箱，请注意查收"});
+                            $("#setring-ackemail").val(email);
+                            $("label[for=setring-ackemail]").addClass("active");
+                            $("#resetpw-setresetpanel").addClass("hide");
+                            $("#resetpw-resetpanel").removeClass("hide");
+                        }
+                    })
+				},
+	            resetClick: function(){
+	            	var uuid = $("#setring-code").val();	                
+	                var pw1 = $("#setring-pw1").val();
+	                var pw2 = $("#setring-pw2").val();
+	                
+	                if(uuid == "" || pw1 == "" || pw2 == ""){
+	                	M.toast({html: "参数错误"});
+	                	return;
+	                }
+	                
+	                if(pw1.length < 6){
+                        M.toast({html: "密码长度至少6位"});
+                        return;
+                    }
+	                
+	                if(pw1 != pw2){
+	                	M.toast({html: "两次输入的密码不一致"});
+                        return;
+	                }
+	                
+	                $.httpSend({
+	                    url: '/user/password/reset/ack',
+	                    type: 'post',
+	                    data: JSON.stringify({
+	                    	uuid: uuid,
+	                    	password: $.md5(pw1)
+	                    }),
+	                    success: function(resp){
+	                        if(!resp.success){
+	                            M.toast({html: resp.message});
+	                            return;
+	                        }
+	                        
+	                        M.toast({html: "密码重置成功"});
+	                        setTimeout(function(){
+	                        	window.location.href="/login"
+	                        }, 1000);
+	                    }
+	                })
+	            }
+	    }
+	</script>
+</body>
+
+</html>

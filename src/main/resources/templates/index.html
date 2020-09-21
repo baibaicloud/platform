@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+<title id="index-page-name">网元管理</title>
+
+<!-- CSS  -->
+<link rel="Shortcut Icon" href="/static/favicon.ico" type="image/x-icon" />
+<link href="/static/css/icon.css" rel="stylesheet">
+<link href="/static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<link href="/static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<link href="/static/css/metroStyle/metroStyle.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<link href="/static/three/jstree/themes/default/style.min.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<link href="/static/three/datatables/jquery.dataTables.min.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<link href="/static/three/jquery-confirm/jquery-confirm.min.css" type="text/css" rel="stylesheet" media="screen,projection" />
+</head>
+
+<body>
+	<div class="navbar-fixed">
+		<nav style="height: 64px !important">
+			<div class="nav-wrapper gradient-45deg-indigo-purple">
+				<div class="brand-logo left noselect" style="padding-left:10px;font-size: 20px; margin-top: -5px;">
+				    <img src="/static/images/logo.png" width="40px;" style="vertical-align: middle;">&nbsp;百百
+				</div>
+				<ul id="nav-mobile" class="right">
+					<li id="index-top-menu-nenode-manger-btn" class="hide"><a id="btn-resource-manage" onclick='indexObj.page("/view/resourcemanage","网元管理");' href="#">网元管理</a></li>
+					<li id="index-top-menu-tunnel-manger-btn" class="hide"><a id="btn-tunnel" onclick='indexObj.page("/view/tunnel","内网穿透");' href="#">内网穿透</a></li>
+					<li id="index-top-menu-account-manger-btn" class="hide"><a onclick="indexObj.page('/view/accountmanage','子账号管理')" href="#!">企业管理</a></li>
+					<li>
+						<a class="dropdown-trigger" href="#!" data-target="head-dropdown-profile">
+							<span style="width: 45px; display: inline-block;"></span>
+							<i class="material-icons right">arrow_drop_down</i>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="right" style="position: relative; margin-top: -65px; margin-right: 45px;pointer-events:none;">
+				你好
+			</div>
+		</nav>
+	</div>
+	
+	<ul id="head-dropdown-profile" class="dropdown-content">
+		<li><a onclick="indexObj.page('/view/setting','个人信息')" href="#!">个人信息</a></li>
+		<li id="index-menu-add-nenode-btn" class="hide"><a onclick="indexObj.page('/view/addne','添加网元')" href="#!">添加网元</a></li>
+		<li id="index-menu-about-btn"><a onclick="indexObj.page('/view/about','关于')" href="#!">关于</a></li>
+		<li><a href="/logout">退出</a></li>
+	</ul>
+	<ul id="head-dropdown-rightmanager" class="dropdown-content">
+		<li><a href="#!">组织管理</a></li>
+		<li><a href="#!">用户管理</a></li>
+	</ul>
+	<div id="body-view" class="body-view"></div>
+
+	<!--  Scripts-->
+	<script src="/static/js/jquery-2.1.1.min.js"></script>
+	<script src="/static/js/jquery.aop.min.js"></script>
+	<script src="/static/js/materialize.min.js"></script>
+	<script src="/static/js/http.js"></script>
+
+	<script type="text/javascript">
+	   
+	   var indexObj = {
+			lastPageRMSetTimeoutId: 0,
+			rights: null,
+            init : function() {
+                $(".dropdown-trigger").dropdown();
+                indexObj.switchUser();
+            },
+            setRight: function(rightInfo){
+            	indexObj.rightInfo = rightInfo;
+            	$("#index-top-menu-nenode-manger-btn").removeClass("hide");
+            	
+            	if(indexObj.rightInfo.authType == "SOLE"){
+            		indexObj.switchSoleRight();
+            		return;
+            	}
+            	
+            	indexObj.switchEnterpriseRight();
+            },
+            hasRight: function(name){
+            	for(var index in indexObj.rightInfo.rights){
+            		if(indexObj.rightInfo.rights[index] == name){
+            			return true;
+            		}
+            	}
+            	
+            	return false;
+            },
+            switchEnterpriseRight: function(){
+                $.each(indexObj.rightInfo.rights, function(i, item){
+                	if(item == "nenode_manage"){
+                		
+                	}
+                    if(item == "enterprise_manage"){
+                    	$("#index-top-menu-account-manger-btn").removeClass("hide");
+                    }
+                    if(item == "add_device"){
+                    	$("#index-menu-add-nenode-btn").removeClass("hide");
+                    }
+                    if(item == "tunnel_manage"){
+                        $("#index-top-menu-tunnel-manger-btn").removeClass("hide");
+                    }
+                });
+                indexObj.page("/view/resourcemanage","网元管理");
+            },
+            switchSoleRight: function(){
+            	$("#index-menu-add-nenode-btn").removeClass("hide");
+            	$("#index-top-menu-tunnel-manger-btn").removeClass("hide");
+            	indexObj.page("/view/resourcemanage","网元管理");
+            },
+            switchUser: function(){
+            	$.httpSend({
+                    url: '/user/switch/info/list/get',
+                    type: 'post',
+                    success: function(resp){
+                    	console.log(resp);
+                        if(resp.content.list.length == 1){
+                        	$.httpSend({
+                                url: '/right/user/right/list/get',
+                                type: 'post',
+                                success: function(resp){
+                                    indexObj.setRight(resp.content);
+                                }
+                            })
+                        	return;
+                        }
+                        
+                        indexObj.page("/view/switchenterprise","选择登录类型");
+                    }
+                })
+            },
+            page: function(page, name){
+            	indexObj.clearSettimeoutId();
+            	
+                $("#body-view").load(page, function(){
+                    
+                });
+                
+                if(name != undefined) {
+                	$("#index-page-name").html(name);
+                }
+            },
+            clearSettimeoutId: function(){
+            	clearTimeout(indexObj.lastPageRMSetTimeoutId);
+            }
+        }
+	
+		$(function() {
+			indexObj.init();
+		});
+	</script>
+</body>
+
+</html>
