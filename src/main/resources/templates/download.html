@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+<title>客户端下载</title>
+
+<!-- CSS  -->
+<link rel="Shortcut Icon" href="/static/favicon.ico" type="image/x-icon" />
+<link href="/static/css/icon.css" rel="stylesheet">
+<link href="/static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<link href="/static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+</head>
+
+<body>
+	<nav class="blue gback" role="navigation">
+		<div class="nav-wrapper container">
+			<div class="brand-logo left noselect" style="padding-left: 10px; font-size: 20px; margin-top: -5px;">
+				<img src="/static/images/logo.png" width="40px;" style="vertical-align: middle;">&nbsp;百百
+			</div>
+			<div class="right" style="padding-left:10px;font-size: 16px;">
+                <a href="/login">登录</a>
+            </div>
+		</div>
+	</nav>
+	<div class="container" style="padding-top:50px; ">
+		<div class="row">
+			<div class="col s4">
+				<div class="card white darken-1">
+					<div class="card-content" style="height: 255px;">
+					    <img src="/static/images/windows-logo.png" width="100"/>
+						<span class="card-title">Windows x64</span>
+						<p>支持Windows 7,8,10</p>
+					</div>
+					<div class="card-action">
+						<a href="/commons/client/download?type=exe">下载</a>
+					</div>
+				</div>
+			</div>
+			<div class="col s4">
+                <div class="card white darken-1">
+                    <div class="card-content" style="height: 255px;">
+                        <img src="/static/images/linux-logo.png" width="100"/>
+                        <span class="card-title">Linux x64</span>
+                        <p>deb格式</p>
+                    </div>
+                    <div class="card-action">
+                        <a href="/commons/client/download?type=deb">下载</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col s4">
+                <div class="card white darken-1">
+                    <div class="card-content" style="height: 255px;">
+                        <img src="/static/images/linux-logo.png" width="100"/>
+                        <span class="card-title">Linux x64</span>
+                        <p>rpm格式</p>
+                    </div>
+                    <div class="card-action">
+                        <a href="/commons/client/download?type=rpm">下载</a>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+
+	<!--  Scripts-->
+	<script src="/static/js/jquery-2.1.1.min.js"></script>
+	<script src="/static/js/jquery.aop.min.js"></script>
+	<script src="/static/js/jquery.md5.js"></script>
+	<script src="/static/js/materialize.min.js"></script>
+	<script src="/static/js/http.js"></script>
+
+	<script type="text/javascript">
+		var downloadObj = {
+
+		}
+	</script>
+</body>
+
+</html>

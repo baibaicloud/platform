@@ -97,4 +97,9 @@ class PageController {
         return "resetpw.html";
     }
 
+    @RequestMapping(value = "/download", method = RequestMethod.GET)
+    public String downloadPage(HttpServletRequest request, HttpServletResponse response) {
+        return "download.html";
+    }
+
 }

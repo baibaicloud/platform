@@ -1,2 +1,1 @@
-tree
-https://www.jstree.com/docs/json/
+tree:https://www.jstree.com/docs/json/

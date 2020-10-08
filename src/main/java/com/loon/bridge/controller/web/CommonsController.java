@@ -42,24 +42,30 @@ public class CommonsController extends BaseWebController {
     @Value("${download.client.path}")
     private String DOWNLOAD_CLIENT_PATH;
 
-    @Value("${download.client.filename}")
-    private String DOWNLOAD_CLIENT_FILENAME;
-
     @RequestMapping(value = "/client/download", method = {RequestMethod.GET})
     public void downloadClient(HttpServletRequest request, HttpServletResponse response) {
 
-        File file = new File(DOWNLOAD_CLIENT_PATH, DOWNLOAD_CLIENT_FILENAME);
-        if (!file.exists()) {
+        String type = request.getParameter("type");
+        File downloadfile = null;
+        File files = new File(DOWNLOAD_CLIENT_PATH);
+        for (File file : files.listFiles()) {
+            if (file.getName().indexOf(type) != -1) {
+                downloadfile = file;
+                break;
+            }
+        }
+
+        if (downloadfile == null) {
             return;
         }
 
         response.setContentType("application/force-download");
-        response.addHeader("Content-Disposition", "attachment;fileName=" + DOWNLOAD_CLIENT_FILENAME);
+        response.addHeader("Content-Disposition", "attachment;fileName=" + downloadfile.getName());
         byte[] buffer = new byte[1024];
         FileInputStream fis = null;
         BufferedInputStream bis = null;
         try {
-            fis = new FileInputStream(file);
+            fis = new FileInputStream(downloadfile);
             bis = new BufferedInputStream(fis);
             OutputStream os = response.getOutputStream();
             int i = bis.read(buffer);
