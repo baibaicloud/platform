@@ -14,7 +14,7 @@
 # 系统整体技术栈
 java-jdk1.8
 
-平台-spring boot+html+css+jquery
+平台-spring boot+html+css+jquery+guacamole
 
 客户端-electron
 
