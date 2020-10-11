@@ -43,6 +43,7 @@ import com.loon.bridge.service.remotecpe.NatService;
 import com.loon.bridge.service.session.Client;
 import com.loon.bridge.service.session.Message;
 import com.loon.bridge.service.session.SessionService;
+import com.loon.bridge.service.tunnel.TunnelService;
 import com.loon.bridge.service.user.UserService;
 import com.loon.bridge.uda.entity.Device;
 import com.loon.bridge.uda.entity.DeviceSettings;
@@ -95,6 +96,9 @@ public class DeviceService implements InitializingBean {
 
     @Autowired
     private EnterpriseService enterpriseService;
+
+    @Autowired
+    private TunnelService tunnelService;
 
     /**
      * 存放sn对应的bingkey 信息
@@ -560,11 +564,7 @@ public class DeviceService implements InitializingBean {
             throw new BusinessException("参数错误");
         }
 
-        boolean isonline = sessionService.deviceIsOnline(deviceId);
-        if (isonline) {
-            throw new BusinessException("网元在线无法删除");
-        }
-
+        tunnelService.delTunnelByCurUserDeviceid(deviceId);
         deviceUserMapper.deleteById(deviceUser.getId());
         deviceUserLastUseService.deleteLastuse(user, deviceUser);
         logger.info("del device success,uid:{}, did:{}", user.getId(), deviceId);

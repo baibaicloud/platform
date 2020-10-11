@@ -65,7 +65,7 @@ public class TunnelService {
     private DeviceService deviceService;
 
     /**
-     * 根据设备id查询隧道列表
+     * 根据设备id查询隧道列表,激活的
      * 
      * @param deviceId
      * @param offset
@@ -178,6 +178,22 @@ public class TunnelService {
         }
 
         return flag;
+    }
+
+    /**
+     * 根据设备id删除当前上下文用户的所有隧道数据
+     * 
+     * @param deviceId
+     */
+    public void delTunnelByCurUserDeviceid(Long deviceId) {
+
+        Tunnel entity = new Tunnel();
+        entity.setDeviceId(deviceId);
+        entity.setUid(RequestUtil.getSecurityUser().getTargetId());
+        QueryWrapper<Tunnel> queryWrapper = new QueryWrapper<Tunnel>();
+        queryWrapper.setEntity(entity);
+
+        tunnelMapper.delete(queryWrapper);
     }
 
     /**
