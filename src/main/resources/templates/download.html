@@ -25,7 +25,8 @@
 		</div>
 	</nav>
 	<div class="container" style="padding-top:50px; ">
-		<div class="row">
+		<div id="download" class="row">
+		    <div class="col s2"></div>
 			<div class="col s4">
 				<div class="card white darken-1">
 					<div class="card-content" style="height: 255px;">
@@ -50,18 +51,11 @@
                     </div>
                 </div>
             </div>
-            <div class="col s4">
-                <div class="card white darken-1">
-                    <div class="card-content" style="height: 255px;">
-                        <img src="/static/images/linux-logo.png" width="100"/>
-                        <span class="card-title">Linux x64</span>
-                        <p>rpm格式</p>
-                    </div>
-                    <div class="card-action">
-                        <a href="/commons/client/download?type=rpm">下载</a>
-                    </div>
-                </div>
-            </div>
+            <div class="col s2"></div>
+		</div>
+		<div id="download-error" class="row" style="display: none; text-align: center;">
+		  <h6>系统无客户端文件，请把客户端文件放到指定目录。</h6>
+		  <span>目标:/data/platform/apps</span>
 		</div>
 	</div>
 
@@ -74,8 +68,15 @@
 
 	<script type="text/javascript">
 		var downloadObj = {
-
+			    init: function(){
+			    	if(location.search.indexOf("error") == -1){
+			    		return;
+			    	}
+			    	$("#download").hide();
+			    	$("#download-error").show();
+			    }
 		}
+		downloadObj.init();
 	</script>
 </body>
 

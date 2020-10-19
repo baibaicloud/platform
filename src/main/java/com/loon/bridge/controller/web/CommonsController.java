@@ -45,50 +45,61 @@ public class CommonsController extends BaseWebController {
     @RequestMapping(value = "/client/download", method = {RequestMethod.GET})
     public void downloadClient(HttpServletRequest request, HttpServletResponse response) {
 
-        String type = request.getParameter("type");
-        File downloadfile = null;
-        File files = new File(DOWNLOAD_CLIENT_PATH);
-        for (File file : files.listFiles()) {
-            if (file.getName().indexOf(type) != -1) {
-                downloadfile = file;
-                break;
-            }
-        }
-
-        if (downloadfile == null) {
-            return;
-        }
-
-        response.setContentType("application/force-download");
-        response.addHeader("Content-Disposition", "attachment;fileName=" + downloadfile.getName());
-        byte[] buffer = new byte[1024];
-        FileInputStream fis = null;
-        BufferedInputStream bis = null;
         try {
-            fis = new FileInputStream(downloadfile);
-            bis = new BufferedInputStream(fis);
-            OutputStream os = response.getOutputStream();
-            int i = bis.read(buffer);
-            while (i != -1) {
-                os.write(buffer, 0, i);
-                i = bis.read(buffer);
+            String type = request.getParameter("type");
+            File downloadfile = null;
+            File files = new File(DOWNLOAD_CLIENT_PATH);
+            for (File file : files.listFiles()) {
+                if (file.getName().indexOf(type) != -1) {
+                    downloadfile = file;
+                    break;
+                }
+            }
+
+            if (downloadfile == null) {
+                response.sendRedirect("/download?error");
+                return;
+            }
+
+            response.setContentType("application/force-download");
+            response.addHeader("Content-Disposition", "attachment;fileName=" + downloadfile.getName());
+            byte[] buffer = new byte[1024];
+            FileInputStream fis = null;
+            BufferedInputStream bis = null;
+            try {
+                fis = new FileInputStream(downloadfile);
+                bis = new BufferedInputStream(fis);
+                OutputStream os = response.getOutputStream();
+                int i = bis.read(buffer);
+                while (i != -1) {
+                    os.write(buffer, 0, i);
+                    i = bis.read(buffer);
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+                response.sendRedirect("/download?error");
+            } finally {
+                if (bis != null) {
+                    try {
+                        bis.close();
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            if (bis != null) {
-                try {
-                    bis.close();
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
-                }
+            try {
+                response.sendRedirect("/download?error");
+            } catch (Exception e1) {
+                logger.error(e1.getMessage(), e1);
             }
         }
     }
