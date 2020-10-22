@@ -54,7 +54,7 @@ java-jdk1.8
 ![企业管理.png](https://img-blog.csdnimg.cn/20200725232137332.png)
 
 # 一键部署百百系统
-[请查看./deployment/readme.md](./deployment/readme.md)
+[请查看https://github.com/baibaicloud/deployment-platform](https://github.com/baibaicloud/deployment-platform)
 
 # 平台源码启动
 修改配置文件
