@@ -57,13 +57,16 @@ java-jdk1.8
 [请查看https://github.com/baibaicloud/deployment-platform](https://github.com/baibaicloud/deployment-platform)
 
 # 平台源码启动
+
+使用eclipse开发工具
+
 修改配置文件
 
-```
-/assembly/src/main/resources/application.properties
-```
+maven 仓库地址请使用阿里云地址，也可用使用工程根目录下settings.xml
 
-主要修改数据库地址
+eclipse maven install
+
+根据实际情况修改 src/main/resources/application.properties文件配置，一般修改数据库地址就可以
 
 启动类设置为`com.loon.bridge.LauncherApplication`即可。
 
