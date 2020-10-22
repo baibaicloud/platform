@@ -56,7 +56,7 @@ services:
             - mysql
         volumes:
             - "/data/platform/logs:/logs"
-            - "/data/platform/apps:/app"
+            - "/data/platform/apps:/apps"
         environment:
             # 环境变量
             - PARAMS=--server.port=8080 --frp.server.address=192.168.88.135 --frptunnel.server.address=192.168.88.135 --guac.guac.hostname=192.168.88.135
