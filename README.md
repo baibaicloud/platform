@@ -24,9 +24,9 @@ java-jdk1.8
 
 数据库-mysql
 
-平台程序支持运行在linux,windowns
+平台程序支持运行在linux,windows
 
-客户端目前只支持windowns7/10 32/64位,linux64位正在开发中
+客户端支持windows64位、linux64。
 
 # 百百系统界面
 ### 登录
