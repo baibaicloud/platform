@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.loon.bridge.service.file.FileService;
 import com.loon.bridge.service.remotecpe.NatService;
 
 /**
@@ -32,6 +33,9 @@ public class GuacamoleService implements InitializingBean {
     @Autowired
     private NatService natService;
 
+    @Autowired
+    private FileService fileService;
+
     @Override
     public void afterPropertiesSet() throws Exception {
         ServerEndpointConfig config = ServerEndpointConfig.Builder.create(LoonGuacamoleWebSocketTunnelEndpoint.class, "/websocket-tunnel").subprotocols(Arrays.asList(new String[]{"guacamole"})).build();
@@ -39,6 +43,7 @@ public class GuacamoleService implements InitializingBean {
         LoonGuacamoleWebSocketTunnelEndpoint.GUAC_HOSTNAME = GUAC_HOSTNAME;
         LoonGuacamoleWebSocketTunnelEndpoint.GUAC_PORT = GUAC_PORT;
         LoonGuacamoleWebSocketTunnelEndpoint.natService = natService;
+        LoonGuacamoleWebSocketTunnelEndpoint.fileService = fileService;
         LoonGuacamoleWebSocketTunnelEndpoint.init();
     }
 

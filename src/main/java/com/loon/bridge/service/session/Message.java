@@ -47,7 +47,10 @@ public class Message {
         ADD_NE_INVITE,
 
         /** 刷新隧道列表 */
-        TUNNEL_REFRESH_LIST
+        TUNNEL_REFRESH_LIST,
+
+        /** 下载文件 */
+        DOWNLOAD_FILE
     }
 
     /**
