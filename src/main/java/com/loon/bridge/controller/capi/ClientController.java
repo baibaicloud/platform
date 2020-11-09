@@ -176,12 +176,11 @@ public class ClientController {
         if (!downloadfile.exists()) {
             throw new BusinessException("not exists file info");
         }
-
-        response.addHeader("Content-Length", fileinfo.getFileSize() + "");
-        response.setContentType("application/force-download");
-        response.addHeader("Content-Disposition", "attachment;fileName=" + fileinfo.getFileName());
-
         try {
+
+            response.addHeader("Content-Length", fileinfo.getFileSize() + "");
+            response.setContentType("application/force-download");
+            response.addHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(fileinfo.getFileName(), "UTF-8"));
 
             byte[] buffer = new byte[1024];
             FileInputStream fis = null;
