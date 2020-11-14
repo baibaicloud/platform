@@ -443,6 +443,23 @@ public class DeviceService implements InitializingBean {
     }
 
     /**
+     * 判断设备是否跟用户有绑定关系
+     * 
+     * @param deviceId
+     * @param targetId
+     * @return
+     */
+    public boolean deviceHasTargetid(Long deviceId, Long targetId) {
+        DeviceUser entity = new DeviceUser();
+        entity.setTargetId(targetId);
+        entity.setDeviceId(deviceId);
+
+        QueryWrapper<DeviceUser> wrapper = new QueryWrapper<DeviceUser>();
+        wrapper.setEntity(entity);
+        return deviceUserMapper.selectCount(wrapper) > 0;
+    }
+
+    /**
      * 获取用户设备id
      * 
      * @param targetId

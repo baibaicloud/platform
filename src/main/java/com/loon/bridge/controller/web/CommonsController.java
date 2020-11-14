@@ -62,7 +62,8 @@ public class CommonsController extends BaseWebController {
             }
 
             response.setContentType("application/force-download");
-            response.addHeader("Content-Disposition", "attachment;fileName=" + downloadfile.getName());
+            response.addHeader("Content-Length", downloadfile.length() + "");
+            response.addHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(downloadfile.getName(), "UTF-8"));
             byte[] buffer = new byte[1024];
             FileInputStream fis = null;
             BufferedInputStream bis = null;

@@ -26,147 +26,325 @@
 <link href="/static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
 <link rel="stylesheet" type="text/css" href="/static/css/guacamole.css" />
 <title>远程控制</title>
+
+<style>
+#show-download-panel-btn {
+    position: absolute;
+    right: 10px;
+    top:100px;
+    background-color: #e4e4e475;
+    padding-top:5px;
+    border-radius: 3px;
+}
+
+#show-download-panel-btn:hover {
+    background-color: #e4e4e4de;
+}
+
+.download-file-list {
+}
+
+.download-file-list .item{
+    background-color: #e9eaec;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.download-file-list .item .del-btn{
+    float:right;
+    color: red;
+    margin-top: -22px;
+    display: none;
+}
+
+.download-file-list .item:hover{
+    background-color: #dee6f7;
+}
+
+.download-file-list .item:hover .del-btn{
+    display: inline;
+}
+
+</style>
 </head>
 
 <body>
-    <div id="loadPanel" style="width: 100%; text-align: center; padding-top: 100px;">
-        <div class="preloader-wrapper big active">
-        <div class="spinner-layer spinner-blue">
-            <div class="circle-clipper left">
-                <div class="circle"></div>
-            </div>
-            <div class="gap-patch">
-                <div class="circle"></div>
-            </div>
-            <div class="circle-clipper right">
-                <div class="circle"></div>
-            </div>
-        </div>
-        <div class="spinner-layer spinner-red">
-            <div class="circle-clipper left">
-                <div class="circle"></div>
-            </div>
-            <div class="gap-patch">
-                <div class="circle"></div>
-            </div>
-            <div class="circle-clipper right">
-                <div class="circle"></div>
-            </div>
-        </div>
-        <div class="spinner-layer spinner-yellow">
-            <div class="circle-clipper left">
-                <div class="circle"></div>
-            </div>
-            <div class="gap-patch">
-                <div class="circle"></div>
-            </div>
-            <div class="circle-clipper right">
-                <div class="circle"></div>
-            </div>
-        </div>
-        <div class="spinner-layer spinner-green">
-            <div class="circle-clipper left">
-                <div class="circle"></div>
-            </div>
-            <div class="gap-patch">
-                <div class="circle"></div>
-            </div>
-            <div class="circle-clipper right">
-                <div class="circle"></div>
-            </div>
-        </div>
-    </div>
-    <div id="loadText" style="color: #9e9e9e;">正在努力连接中，请稍等片刻..</div>
-    <div id="errorText" style="color: red;" class="hide">远程失败，请检查远程机器网络是否正常，如果有登录名称和密码请核对是否正确。</div>
-    </div>
+	<div id="loadPanel" style="width: 100%; text-align: center; padding-top: 100px;">
+		<div class="preloader-wrapper big active">
+			<div class="spinner-layer spinner-blue">
+				<div class="circle-clipper left">
+					<div class="circle"></div>
+				</div>
+				<div class="gap-patch">
+					<div class="circle"></div>
+				</div>
+				<div class="circle-clipper right">
+					<div class="circle"></div>
+				</div>
+			</div>
+			<div class="spinner-layer spinner-red">
+				<div class="circle-clipper left">
+					<div class="circle"></div>
+				</div>
+				<div class="gap-patch">
+					<div class="circle"></div>
+				</div>
+				<div class="circle-clipper right">
+					<div class="circle"></div>
+				</div>
+			</div>
+			<div class="spinner-layer spinner-yellow">
+				<div class="circle-clipper left">
+					<div class="circle"></div>
+				</div>
+				<div class="gap-patch">
+					<div class="circle"></div>
+				</div>
+				<div class="circle-clipper right">
+					<div class="circle"></div>
+				</div>
+			</div>
+			<div class="spinner-layer spinner-green">
+				<div class="circle-clipper left">
+					<div class="circle"></div>
+				</div>
+				<div class="gap-patch">
+					<div class="circle"></div>
+				</div>
+				<div class="circle-clipper right">
+					<div class="circle"></div>
+				</div>
+			</div>
+		</div>
+		<div id="loadText" style="color: #9e9e9e;">正在努力连接中，请稍等片刻..</div>
+		<div id="errorText" style="color: red;" class="hide">远程失败，请检查远程机器网络是否正常，如果有登录名称和密码请核对是否正确。</div>
+	</div>
 	<div id="display"></div>
+	<div id="file-upload-panel" style="display: none;">
+		<div style="color: #039be5">文件上传进度</div>
+		<div class="progress">
+			<div id="upload-progress" class="determinate" style="width: 0%"></div>
+		</div>
+	</div>
+	
+	<a href="#" id="show-download-panel-btn" title="文件列表" data-target="download-file-list" class="sidenav-trigger right"><i class="material-icons noselect">library_books</i></a>
+    <nav class="hide"></nav>
+	<div id="download-file-list" class="sidenav download-file-list">
+	   <div id="download-file-list-empty" class="noselect" style="text-align: center;padding-top: 200px"><h6>无文件</h6></div>
+	</div>
+    <div id="download-file-list-template" class="hide">
+        <div id="download-file-list-item-{id}" eid="{eid}" class="item" onclick="desktopObj.downloadFile(this)">
+           <div class="noselect" style="overflow: hidden;">{name}</div>
+           <div onclick="desktopObj.delFile(this)" class="del-btn"  title="删除文件"><i class="material-icons noselect">cancel</i></div>
+       </div>
+    </div>
+
 	<script type="text/javascript" src="/static/js/guacamole.common.all.min.js"></script>
 	<script src="/static/js/jquery-2.1.1.min.js"></script>
 	<script src="/static/three/jquery-confirm/jquery-confirm.min.js"></script>
+	<script src="/static/js/materialize.min.js"></script>
+	<script src="/static/js/jquery.nicescroll.min.js" charset="utf-8"></script>
 	<script src="/static/js/utils.js"></script>
-	
+	<script src="/static/js/http.js"></script>
+
 	<script type="text/javascript">
-	
-	   var desktopObj = {
-			   go: function(){
-				   function getUrlParam(name) {
-			            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-			            var r = window.location.search.substr(1).match(reg);
-			            if (r != null) return unescape(r[2]); return null;
-			        }
-			        
-			        var display = document.getElementById("display");
-			        var tunnel = new Guacamole.ChainedTunnel(new Guacamole.WebSocketTunnel('websocket-tunnel'));
-			        var guac = new Guacamole.Client(tunnel);
-			        display.appendChild(guac.getDisplay().getElement());
+		var desktopObj = {
+			uuid : null,
+			getFileList: function(){
+				$("#show-download-panel-btn").click();
+				if(!desktopObj.uuid){
+					return;
+				}
+				
+				setInterval(function(){
+					$.httpSend({
+	                    url : '/file/list/get',
+	                    type : 'post',
+	                    data : JSON.stringify({
+	                        uuid : desktopObj.uuid
+	                    }),
+	                    success: function(resp){
+	                    	if(!resp.success){
+	                    		return;
+	                    	}
+	                        desktopObj.makeFileListItem(resp.content);
+	                    }
+	                })
+				}, 2000);
+			},
+			makeFileListItem: function(list){
+				if(list.length == 0){
+					$("#download-file-list-empty").removeClass("hide");
+					return;
+				}
+				
+				$("#download-file-list-empty").addClass("hide");
+				$("#download-file-list").find("div[eid]").remove();
+				for(var item of list){
+					var html = $("#download-file-list-template").html();
+					html = html.replace("{id}", item.fileId);
+					html = html.replace("{eid}", item.fileId);
+					html = html.replace("{name}", item.fileName);
+					$("#download-file-list").append(html);
+				}
+			},
+			downloadFile: function(cur){
+				var id = $(cur).attr('eid');
+				window.open("/file/download?uuid=" + desktopObj.uuid + "&fileId=" + id); 
+			},
+			delFile: function(cur){
+				event.stopPropagation();
+				var id = $(cur).parent().attr('eid');
+				$(cur).parent().remove();
+				
+				$.httpSend({
+                    url : '/file/delete',
+                    type : 'post',
+                    data : JSON.stringify({
+                    	uuid : desktopObj.uuid,
+                    	fileId : id
+                    })
+                })
+			},
+			go : function() {
+				$('#download-file-list').niceScroll({
+				    cursorcolor: "#ccc",//#CC0071 光标颜色
+				    cursoropacitymax: 1, //改变不透明度非常光标处于活动状态（scrollabar“可见”状态），范围从1到0
+				    touchbehavior: false, //使光标拖动滚动像在台式电脑触摸设备
+				    cursorwidth: "5px", //像素光标的宽度
+				    cursorborder: "0", // 游标边框css定义
+				    cursorborderradius: "5px",//以像素为光标边界半径
+				    autohidemode: false //是否隐藏滚动条
+				});
+				
+				$('.sidenav').sidenav({
+					"edge":"right"
+				});
+				function getUrlParam(name) {
+					var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+					var r = window.location.search.substr(1).match(reg);
+					if (r != null)
+						return unescape(r[2]);
+					return null;
+				}
 
-			        guac.connect("uuid=" + getUrlParam("uuid"));
-			        guac.onstatechange = function(state){
-                        if(state == "3"){
-                        	$("#loadPanel").addClass("hide");
-                        	return;
-                        }
-                        if(state == "5"){
-                        	$("#errorText").removeClass("hide");
-                            $("#loadText").addClass("hide");
-                            alert("远程控制已断开");
-                            return;
-                        }
-                    }
-			        
-			        guac.onfile = function(){
-			        	console.log('file');
-			        }
-			        
-			        guac.onfilesystem = function(){
-                        console.log('onfilesystem');
-                    }
-			        
-			        window.onunload = function() {
-			            guac.disconnect();
-			        }
-			        
-			        var mouse = new Guacamole.Mouse(guac.getDisplay().getElement());
-			        mouse.onmousedown = mouse.onmouseup = mouse.onmousemove = function(mouseState) {
-			            guac.sendMouseState(mouseState);
-			        };
+				var display = document.getElementById("display");
+				var tunnel = new Guacamole.ChainedTunnel(new Guacamole.WebSocketTunnel('websocket-tunnel'));
+				var guac = new Guacamole.Client(tunnel);
+				display.appendChild(guac.getDisplay().getElement());
+				desktopObj.uuid = getUrlParam("uuid");
+				guac.connect("uuid=" + desktopObj.uuid);
+				guac.onstatechange = function(state) {
+					if (state == "3") {
+						$("#loadPanel").addClass("hide");
+						return;
+					}
+					if (state == "5") {
+						$("#errorText").removeClass("hide");
+						$("#loadText").addClass("hide");
+						alert("远程控制已断开");
+						return;
+					}
+				}
 
-			        var keyboard = new Guacamole.Keyboard(document);
-			        keyboard.onkeydown = function(keysym) {
-			            guac.sendKeyEvent(1, keysym);
-			        };
+				guac.onfile = function() {
+					console.log('file');
+				}
 
-			        keyboard.onkeyup = function(keysym) {
-			            guac.sendKeyEvent(0, keysym);
-			        };
-			        
-			        display.addEventListener("dragenter", function(e){
-			            e.stopPropagation();
-			            e.preventDefault();
-			        }, false);
-			                    
-			        display.addEventListener("dragover", function(e){
-			            e.stopPropagation();
-			            e.preventDefault();
-			        }, false);
-			                    
-			        display.addEventListener("drop", function(e){
-			            e.stopPropagation();
-			            e.preventDefault();
-			            var dt = e.dataTransfer;
-			            var files = dt.files;
-			            var file = files[0];
-			            //guac.createFileStream(file.type, file.name);
-			            ManagedClient.uploadFile(guac,file);
-			        }, false);
-			   }
-	   }
-	
-	   $(function(){
-		   $("#loadText").removeClass("hide");
-		   $("#errorText").addClass("hide");
-		   desktopObj.go();
-	   });
+				guac.onfilesystem = function() {
+					console.log('onfilesystem');
+				}
+
+				window.onunload = function() {
+					guac.disconnect();
+				}
+
+				var mouse = new Guacamole.Mouse(guac.getDisplay().getElement());
+				mouse.onmousedown = mouse.onmouseup = mouse.onmousemove = function(
+						mouseState) {
+					guac.sendMouseState(mouseState);
+				};
+
+				var keyboard = new Guacamole.Keyboard(document);
+				keyboard.onkeydown = function(keysym) {
+					guac.sendKeyEvent(1, keysym);
+				};
+
+				keyboard.onkeyup = function(keysym) {
+					guac.sendKeyEvent(0, keysym);
+				};
+
+				display.addEventListener("dragenter", function(e) {
+					e.stopPropagation();
+					e.preventDefault();
+				}, false);
+
+				display.addEventListener("dragover", function(e) {
+					e.stopPropagation();
+					e.preventDefault();
+				}, false);
+
+				display.addEventListener("drop", function(e) {
+					e.stopPropagation();
+					e.preventDefault();
+					var dt = e.dataTransfer;
+					var files = dt.files;
+					var file = files[0];
+					desktopObj.uploadFile(file)
+				}, false);
+				
+				desktopObj.getFileList();
+			},
+			uplaodProgress : function(progress) {
+				$("#upload-progress").css("width", progress + "%");
+			},
+			hideUploadFilePanel : function() {
+				$("#file-upload-panel").css("display", "none");
+				desktopObj.uplaodProgress(0);
+				desktopObj.uploading = false;
+			},
+			uploadFile : function(uploadFile) {
+				var formdata = new FormData();
+				formdata.append('file', uploadFile);
+				formdata.append('uuid', desktopObj.uuid);
+				$("#file-upload-panel").css("display", "block");
+				if (desktopObj.uploading) {
+					return;
+				}
+				desktopObj.uploading = true;
+				$.ajax({
+					url : '/file/upload',
+					type : 'post',
+					dataType : 'json',
+					data : formdata,
+					timeout : 9999999,
+					processData : false,
+					contentType : false,
+					xhr : function() {
+						var xhr = new XMLHttpRequest();
+						xhr.upload.addEventListener('progress', function(e) {
+							var progressRate = (e.loaded / e.total) * 100;
+							desktopObj.uplaodProgress(progressRate);
+						});
+						return xhr;
+					},
+					success : function() {
+						desktopObj.hideUploadFilePanel();
+					},
+					error : function() {
+						desktopObj.hideUploadFilePanel();
+					}
+				})
+			}
+		}
+
+		$(function() {
+			$("#loadText").removeClass("hide");
+			$("#errorText").addClass("hide");
+			desktopObj.go();
+		});
 	</script>
 
 </body>

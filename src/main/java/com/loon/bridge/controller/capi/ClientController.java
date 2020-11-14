@@ -13,18 +13,27 @@
  */
 package com.loon.bridge.controller.capi;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.loon.bridge.core.exception.BusinessException;
 import com.loon.bridge.core.utils.RequestUtil;
@@ -32,6 +41,8 @@ import com.loon.bridge.core.web.Result;
 import com.loon.bridge.service.ack.ACKService;
 import com.loon.bridge.service.commons.ServerInfoService;
 import com.loon.bridge.service.device.DeviceService;
+import com.loon.bridge.service.file.FileInfo;
+import com.loon.bridge.service.file.FileService;
 import com.loon.bridge.service.remotecpe.NatService;
 import com.loon.bridge.service.session.Client;
 import com.loon.bridge.service.session.Message;
@@ -50,6 +61,9 @@ import com.loon.bridge.uda.entity.Device;
 public class ClientController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Value("${fileupload.files.path}")
+    private String UPLOAD_FILES_PATH;
 
     @Autowired
     private ServerInfoService serverInfoService;
@@ -71,6 +85,9 @@ public class ClientController {
 
     @Autowired
     private TunnelService tunnelService;
+
+    @Autowired
+    private FileService fileService;
 
     @RequestMapping(value = "/capi/client/commons", method = {RequestMethod.POST})
     @ResponseBody
@@ -108,6 +125,9 @@ public class ClientController {
                 case "get_tunnel_list":
                     obj = tunnelService.getTunnelList(client, params);
                     break;
+                case "files_delete":
+                    obj = fileService.deleteFile(client, params);
+                    break;
                 default:
                     break;
             }
@@ -118,6 +138,82 @@ public class ClientController {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return Result.Error();
+        }
+    }
+
+    @RequestMapping(value = "/capi/file/upload", method = {RequestMethod.POST})
+    @ResponseBody
+    public Object upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        try {
+            Client client = getClientByToken(request);
+            String uuid = request.getParameter("uuid");
+            if (StringUtils.isEmpty(uuid)) {
+                return Result.Error("not find uuid");
+            }
+            fileService.uploadFileFromClient(client, file, uuid);
+            return Result.Success();
+        } catch (BusinessException e) {
+            logger.error(e.getMessage(), e);
+            return Result.Error(e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return Result.Error();
+        }
+    }
+
+    @RequestMapping(value = "/capi/file/download", method = {RequestMethod.GET})
+    public void downloadFile(HttpServletRequest request, HttpServletResponse response) {
+
+        Client client = getClientByToken(request);
+        String fileId = request.getParameter("fileId");
+        String uuid = request.getParameter("uuid");
+        FileInfo fileinfo = fileService.getFileInfo(client, fileId, uuid);
+        if (fileinfo == null) {
+            throw new BusinessException("not find file info");
+        }
+
+        File downloadfile = new File(UPLOAD_FILES_PATH + "/" + fileinfo.getFileId());
+        if (!downloadfile.exists()) {
+            throw new BusinessException("not exists file info");
+        }
+        try {
+
+            response.addHeader("Content-Length", fileinfo.getFileSize() + "");
+            response.setContentType("application/force-download");
+            response.addHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(fileinfo.getFileName(), "UTF-8"));
+
+            byte[] buffer = new byte[1024];
+            FileInputStream fis = null;
+            BufferedInputStream bis = null;
+            try {
+                fis = new FileInputStream(downloadfile);
+                bis = new BufferedInputStream(fis);
+                OutputStream os = response.getOutputStream();
+                int i = bis.read(buffer);
+                while (i != -1) {
+                    os.write(buffer, 0, i);
+                    i = bis.read(buffer);
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            } finally {
+                if (bis != null) {
+                    try {
+                        bis.close();
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -227,4 +323,15 @@ public class ClientController {
 
         return client;
     }
+
+    private Client getClientByToken(HttpServletRequest request) {
+
+        Client client = this.sessionService.getClientByToken(request.getParameter("token"));
+        if (client == null) {
+            throw new BusinessException("授权信息错误，请重新登录", 1);
+        }
+
+        return client;
+    }
+
 }

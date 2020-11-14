@@ -37,6 +37,7 @@ import org.springframework.util.StringUtils;
 import com.loon.bridge.core.comenum.RemoteProtocolType;
 import com.loon.bridge.core.exception.BusinessException;
 import com.loon.bridge.core.utils.TaskEngine;
+import com.loon.bridge.service.file.FileService;
 import com.loon.bridge.service.remotecpe.NatInfo;
 import com.loon.bridge.service.remotecpe.NatService;
 
@@ -51,6 +52,7 @@ public class LoonGuacamoleWebSocketTunnelEndpoint extends GuacamoleWebSocketTunn
     public static String GUAC_HOSTNAME = "";
     public static Integer GUAC_PORT = 0;
     public static NatService natService;
+    public static FileService fileService;
     private static Map<String, Integer> pings = new ConcurrentHashMap<String, Integer>();
 
     /*
@@ -132,6 +134,7 @@ public class LoonGuacamoleWebSocketTunnelEndpoint extends GuacamoleWebSocketTunn
 
         pings.remove(uuid);
         natService.gcPortByUUID(uuid);
+        fileService.clearFilesByUuid(uuid);
     }
 
     public static void init() {
