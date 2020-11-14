@@ -30,8 +30,15 @@
 <style>
 #show-download-panel-btn {
     position: absolute;
-    right: 0px;
-    top:40%;
+    right: 10px;
+    top:100px;
+    background-color: #e4e4e475;
+    padding-top:5px;
+    border-radius: 3px;
+}
+
+#show-download-panel-btn:hover {
+    background-color: #e4e4e4de;
 }
 
 .download-file-list {
@@ -122,7 +129,7 @@
 		</div>
 	</div>
 	
-	<a href="#" id="show-download-panel-btn" data-target="download-file-list" class="sidenav-trigger right"><i class="material-icons noselect" style="font-size:35px;">keyboard_arrow_left</i></a>
+	<a href="#" id="show-download-panel-btn" title="文件列表" data-target="download-file-list" class="sidenav-trigger right"><i class="material-icons noselect">library_books</i></a>
     <nav class="hide"></nav>
 	<div id="download-file-list" class="sidenav download-file-list">
 	   <div id="download-file-list-empty" class="noselect" style="text-align: center;padding-top: 200px"><h6>无文件</h6></div>
