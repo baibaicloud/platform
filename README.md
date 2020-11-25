@@ -4,6 +4,8 @@
 
 支持内外穿透、四层协议代理。
 
+[官网地址http://bb.app-yun.com/](http://bb.app-yun.com/)
+
 配合[客户端](https://github.com/baibaicloud/prober)使用即使被控PC没有公网也能进行远程控制,随时随地进行远程控制，还可支持代理局域网端口。
 
 支持个人、企业、权限控制。
