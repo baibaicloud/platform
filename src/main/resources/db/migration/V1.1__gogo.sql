@@ -16,3 +16,5 @@ CREATE TABLE `t_audit_video` (
   KEY `t_audit_video_devicename` (`deviceName`) USING BTREE,
   KEY `t_audit_video_targetid` (`targetid`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+INSERT INTO `t_right` VALUES ('5', '审计录像', 'browser_audit_video');
