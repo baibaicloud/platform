@@ -136,6 +136,7 @@ public class AuditVideoController extends BaseWebController {
             File file = auditVideoService.getFileByuuidCuruser(uuid);
 
             if (file == null) {
+                logger.error("not find file info by uuid:{}", uuid);
                 return;
             }
 
