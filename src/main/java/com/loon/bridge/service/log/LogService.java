@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.loon.bridge.core.exception.BusinessException;
+import com.loon.bridge.service.user.UserService;
 import com.loon.bridge.uda.entity.Log;
 import com.loon.bridge.uda.entity.User;
 import com.loon.bridge.uda.mapper.LogMapper;
@@ -36,6 +38,25 @@ public class LogService {
 
     @Autowired
     private LogMapper logMapper;
+
+    @Autowired
+    private UserService userService;
+
+    /**
+     * 添加log
+     * 
+     * @param user
+     * @param module
+     * @param content
+     */
+    public void addLog(Long uid, String module, String content, Object... params) {
+        User user = userService.getUserById(uid);
+        if(user == null) {
+            throw new BusinessException("用户找不到");
+        }
+
+        this.addLog(user, module, content, params);
+    }
 
     /**
      * 添加log

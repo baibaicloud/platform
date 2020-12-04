@@ -27,7 +27,8 @@
 				<ul id="nav-mobile" class="right">
 					<li id="index-top-menu-nenode-manger-btn" class="hide"><a id="btn-resource-manage" onclick='indexObj.page("/view/resourcemanage","网元管理");' href="#">网元管理</a></li>
 					<li id="index-top-menu-tunnel-manger-btn" class="hide"><a id="btn-tunnel" onclick='indexObj.page("/view/tunnel","内网穿透");' href="#">内网穿透</a></li>
-					<li id="index-top-menu-account-manger-btn" class="hide"><a onclick="indexObj.page('/view/accountmanage','子账号管理')" href="#!">企业管理</a></li>
+					<li id="index-top-menu-account-manger-btn" class="hide"><a onclick="indexObj.page('/view/accountmanage','企业管理')" href="#!">企业管理</a></li>
+					<li id="index-top-menu-audit-video-btn" class="hide"><a onclick="indexObj.page('/view/auditvideo','录像审计')" href="#!">录像审计</a></li>
 					<li>
 						<a class="dropdown-trigger" href="#!" data-target="head-dropdown-profile">
 							<span style="width: 45px; display: inline-block;"></span>
@@ -103,12 +104,16 @@
                     if(item == "tunnel_manage"){
                         $("#index-top-menu-tunnel-manger-btn").removeClass("hide");
                     }
+                    if(item == "browser_audit_video"){
+                        $("#index-top-menu-audit-video-btn").removeClass("hide");
+                    }
                 });
                 indexObj.page("/view/resourcemanage","网元管理");
             },
             switchSoleRight: function(){
             	$("#index-menu-add-nenode-btn").removeClass("hide");
             	$("#index-top-menu-tunnel-manger-btn").removeClass("hide");
+            	$("#index-top-menu-audit-video-btn").removeClass("hide");
             	indexObj.page("/view/resourcemanage","网元管理");
             },
             switchUser: function(){
@@ -116,7 +121,6 @@
                     url: '/user/switch/info/list/get',
                     type: 'post',
                     success: function(resp){
-                    	console.log(resp);
                         if(resp.content.list.length == 1){
                         	$.httpSend({
                                 url: '/right/user/right/list/get',

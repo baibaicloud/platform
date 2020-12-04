@@ -33,6 +33,7 @@ import org.springframework.util.StringUtils;
 import com.loon.bridge.core.comenum.FRPProxyType;
 import com.loon.bridge.core.comenum.RemoteProtocolType;
 import com.loon.bridge.core.exception.BusinessException;
+import com.loon.bridge.core.utils.RequestUtil;
 import com.loon.bridge.core.utils.TaskEngine;
 import com.loon.bridge.core.utils.Util;
 import com.loon.bridge.service.hacker.HackerService;
@@ -163,9 +164,11 @@ public class NatService implements InitializingBean {
         natInfo.setCtime(new Date());
         natInfo.setLastDate(natInfo.getCtime());
         natInfo.setSelfname(user.getSelfname());
+        natInfo.setUsername(user.getUsername());
         natInfo.setDeviceId(device.getId());
         natInfo.setDeviceSn(device.getSn());
         natInfo.setLocalPort(Integer.valueOf(params.get("localPort")));
+        natInfo.setTargetId(RequestUtil.getSecurityUser().getTargetId());
 
         if (type == RemoteProtocolType.VNC) {
             natInfo.setPassword(Util.UUID8());

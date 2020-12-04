@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+<head>
+<!-- CSS  -->
+<link rel="Shortcut Icon" href="/static/favicon.ico" type="image/x-icon" />
+<link href="/static/css/icon.css" rel="stylesheet">
+<link href="/static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<link href="/static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<link href="/static/css/playback.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<title>审计录像</title>
+</head>
+
+<body>
+    
+    <div id="downloading-panel" class="center blue-text" style="padding-top: 100px;">
+        <div><i class="material-icons" style="font-size: 100px;">cloud_download</i></div>
+        <h5>下载中，请稍等...</h5>
+    </div>
+
+	<div id="player">
+		<div id="display"></div>
+		<div class="controls">
+		    <input id="position-slider" type="range">
+			<button id="play-pause" class="btn waves-effect waves-light gback align-right" name="action">点击播放</button>
+			<span id="position">00:00</span> <span>/</span> <span id="duration">00:00</span>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="/static/js/guacamole.common.all.min.js"></script>
+	<script src="/static/js/jquery-2.1.1.min.js"></script>
+	<script src="/static/three/jquery-confirm/jquery-confirm.min.js"></script>
+	<script src="/static/js/materialize.min.js"></script>
+	<script src="/static/js/utils.js"></script>
+	<script src="/static/js/http.js"></script>
+	<script src="/static/js/playback.js"></script>
+</body>
+</html>
