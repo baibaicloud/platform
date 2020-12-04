@@ -37,6 +37,7 @@ import org.springframework.util.StringUtils;
 import com.loon.bridge.core.comenum.RemoteProtocolType;
 import com.loon.bridge.core.exception.BusinessException;
 import com.loon.bridge.core.utils.TaskEngine;
+import com.loon.bridge.service.auditvideo.AuditVideoService;
 import com.loon.bridge.service.file.FileService;
 import com.loon.bridge.service.remotecpe.NatInfo;
 import com.loon.bridge.service.remotecpe.NatService;
@@ -53,6 +54,7 @@ public class LoonGuacamoleWebSocketTunnelEndpoint extends GuacamoleWebSocketTunn
     public static Integer GUAC_PORT = 0;
     public static NatService natService;
     public static FileService fileService;
+    public static AuditVideoService auditVideoService;
     private static Map<String, Integer> pings = new ConcurrentHashMap<String, Integer>();
 
     /*
@@ -89,6 +91,8 @@ public class LoonGuacamoleWebSocketTunnelEndpoint extends GuacamoleWebSocketTunn
 
         if (natInfo.getTunnetType() == RemoteProtocolType.VNC) {
             // set vnc params
+            config.setParameter("recording-path", "/home/guacd/file");
+            config.setParameter("recording-name", uuid);
         } else if (natInfo.getTunnetType() == RemoteProtocolType.RDP) {
             config.setParameter("username", natInfo.getUsername());
             config.setParameter("ignore-cert", "true");
@@ -133,6 +137,8 @@ public class LoonGuacamoleWebSocketTunnelEndpoint extends GuacamoleWebSocketTunn
         }
 
         pings.remove(uuid);
+        NatInfo tempNatInfo = natService.getPortInfoByUUID(uuid);
+        auditVideoService.addAuditVideo(tempNatInfo);
         natService.gcPortByUUID(uuid);
         fileService.clearFilesByUuid(uuid);
     }

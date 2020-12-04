@@ -52,6 +52,11 @@ class PageController {
         return "webdesktop.html";
     }
 
+    @RequestMapping(value = "/auditvideo", method = RequestMethod.GET)
+    public String auditvideo() {
+        return "browser-video.html";
+    }
+
     @RequestMapping(value = "/view/resourcemanage", method = RequestMethod.GET)
     public String resourceManagePage() {
         return "view/resource-manage.html";
@@ -60,6 +65,11 @@ class PageController {
     @RequestMapping(value = "/view/accountmanage", method = RequestMethod.GET)
     public String accountManagePage() {
         return "view/account-manage.html";
+    }
+
+    @RequestMapping(value = "/view/auditvideo", method = RequestMethod.GET)
+    public String auditVideoPage() {
+        return "view/audit-video.html";
     }
 
     @RequestMapping(value = "/view/switchenterprise", method = RequestMethod.GET)

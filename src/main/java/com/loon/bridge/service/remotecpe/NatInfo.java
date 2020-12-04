@@ -42,6 +42,7 @@ public class NatInfo {
     private RemoteProtocolType tunnetType;
     private Date lastDate;
     private Date ctime;
+    private Long targetId;
 
     /**
      * @return the lastDate
@@ -279,6 +280,20 @@ public class NatInfo {
      */
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    /**
+     * @return the targetId
+     */
+    public Long getTargetId() {
+        return targetId;
+    }
+
+    /**
+     * @param targetId the targetId to set
+     */
+    public void setTargetId(Long targetId) {
+        this.targetId = targetId;
     }
 
 }

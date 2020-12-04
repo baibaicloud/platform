@@ -1,9 +1,14 @@
 package com.loon.bridge.core.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 /**
  * 
@@ -11,6 +16,31 @@ import java.util.TimeZone;
  * @author nbflow
  */
 public final class DateUtil {
+
+    private static Logger logger = LoggerFactory.getLogger(DateUtil.class);
+
+    /**
+     * 字符串时间转成时间对象
+     * 
+     * @param strDate
+     * @return
+     * @throws ParseException
+     */
+    public static Date strToDate(String strDate) {
+        try {
+
+            if (StringUtils.isEmpty(strDate)) {
+                return null;
+            }
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sdf.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+            return sdf.parse(strDate);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
 
     /**
      * 时间格式化
