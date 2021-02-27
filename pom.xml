@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.loon.bridge</groupId>
-	<artifactId>assembly</artifactId>
+	<artifactId>baibai-loon-bridge</artifactId>
 	<version>1.0.0</version>
 	<name>assembly</name>
 	<description>Demo project for Spring Boot</description>
