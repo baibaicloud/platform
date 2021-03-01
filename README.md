@@ -98,3 +98,10 @@ npm start
 ```
 docker build -t registry.cn-hangzhou.aliyuncs.com/baibaicloud/baibai-platform:1.0.2 .
 ```
+
+# 插个私人广告 BB-API HTTP请求工具
+致力于打造简洁、免费、好用的HTTP模拟请求工具，自动生成接口文档。
+
+帮助您公司、团队、个人提高开发效率。
+
+官网地址：http://api.app-yun.com/bbapi/index.html
