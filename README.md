@@ -1,5 +1,9 @@
 # 百百-远程控制(英文名称:baibai)
 
+# 本项目已迁移到gitee上
+# [gitee地址https://gitee.com/baibaiclouds/platform](https://gitee.com/baibaiclouds/platform)
+
+
 基于web的远程控制，无任何插件。协议支持vnc，rdp，ssh。
 
 支持内外穿透、四层协议代理。
@@ -38,6 +42,7 @@ java-jdk1.8
 |客户端支持windows,linux|已支持|1.0.6|
 |传文件|已支持|1.2.0|
 |远程控制录屏、播放录屏|已支持|1.3.0|
+|专业版本(面向单个团队的运维，全新的系统、控制界面)|正在开发中|2.0.0|
 
 # 百百系统界面
 ### 登录
